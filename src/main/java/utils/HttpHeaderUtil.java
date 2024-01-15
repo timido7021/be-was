@@ -2,50 +2,52 @@ package utils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import webserver.RequestHandler;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
 
 public class HttpHeaderUtil {
     private static final Logger logger = LoggerFactory.getLogger(HttpHeaderUtil.class);
 
-    public static String[] getHttpMethodAndUrl(BufferedReader bufferedReader) throws IOException{
+    public static String[] getHttpMethodAndUrl(BufferedReader bufferedReader) throws IOException {
+        String httpRequest = bufferedReader.readLine().trim();
+        String[] httpRequestTokens = httpRequest.split(" ");
+        String httpMethod = httpRequestTokens[0];
+        String requestUrl = httpRequestTokens[1];
+
+        logger.debug("HTTP Method: " + httpMethod);
+        logger.debug("HTTP Request URL: " + requestUrl);
+
         String requestHeaderLine = "";
-        String httpMethod = "";
-        String requestUrl = "";
 
         while (!(requestHeaderLine = bufferedReader.readLine().trim()).isEmpty()) {
-            logger.debug(requestHeaderLine);
-
-            String[] tokens = requestHeaderLine.split(" ");
-            if (tokens[0].equals("GET")
-                    || tokens[0].equals("POST")) {
-                httpMethod = tokens[0];
-                requestUrl = tokens[1];
-            }
+            if (
+                    requestHeaderLine.startsWith("Host: ")
+                    || requestHeaderLine.startsWith("Connection: ")
+                    || requestHeaderLine.startsWith("Accept")
+                    || requestHeaderLine.startsWith("User-Agent: ")
+                    || requestHeaderLine.startsWith("Referer: ")
+            )
+                logger.debug(requestHeaderLine);
         }
 
-        String[] result = {httpMethod, requestUrl};
-        return result;
+        return httpRequestTokens;
     }
 
     public static String getContentType(String requestedUrl) {
         Path source = Paths.get(requestedUrl);
         try {
-            String mimeType = Files.probeContentType(source);
-            if (mimeType == null) {
+            String contentType = Files.probeContentType(source);
+            if (contentType == null) {
                 if (requestedUrl.endsWith(".woff"))
-                    mimeType = "font/woff";
+                    contentType = "font/woff";
                 else
                     throw new Exception("cannot determine content-type.");
             }
-            return mimeType;
+            return contentType;
         } catch (Exception e) {
             logger.error(e.getMessage());
             return "text/plain";
