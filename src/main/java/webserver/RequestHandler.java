@@ -7,6 +7,7 @@ import java.util.Arrays;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import utils.HttpHeaderUtil;
 
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
@@ -24,46 +25,25 @@ public class RequestHandler implements Runnable {
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in));
 
-            String requestHeaderLine = "";
-            String method = "";
-            String requestUrl = "";
-
-            while (!(requestHeaderLine = bufferedReader.readLine().trim()).isEmpty()) {
-                logger.debug(requestHeaderLine);
-
-                String[] tokens = requestHeaderLine.split(" ");
-                if (tokens[0].equals("GET")
-                        || tokens[0].equals("POST")) {
-                    method = tokens[0];
-                    requestUrl = tokens[1];
-                }
-            }
-
-            // TODO 사용자 요청에 대한 처리는 이 곳에 구현하면 된다.
+            String[] httpMethodAndUrl = HttpHeaderUtil.getHttpMethodAndUrl(bufferedReader);
+            String httpMethod = httpMethodAndUrl[0];
+            String requestUrl = httpMethodAndUrl[1];
 
             DataOutputStream dos = new DataOutputStream(out);
             byte[] body;
             String contentType;
-            if (method.equals("GET")) {
-                if (requestUrl.equals("/index.html")) {
-                    body = Files.readAllBytes(
-                            new File("./src/main/resources/templates" + requestUrl).toPath());
-                    contentType = "text/html";
-                }
-                else  {
-                    body = Files.readAllBytes(
-                            new File("./src/main/resources/static" + requestUrl).toPath());
 
-                    if (requestUrl.endsWith(".js"))
-                        contentType = "text/javascript";
-                    else if (requestUrl.endsWith(".css"))
-                        contentType = "text/css";
-                    else if (requestUrl.endsWith(".ico"))
-                        contentType = "image/vnd.microsoft.icon";
-                    else if (requestUrl.endsWith(".ttf"))
-                        contentType = "text/ttf";
-                    else
-                        contentType = "text/plain";
+            if (httpMethod.equals("GET")) {
+                String mimeType = HttpHeaderUtil.getContentType(requestUrl);
+                contentType = mimeType;
+
+                if (mimeType.equals("text/html")) {
+                    body = Files.readAllBytes(
+                            new File("src/main/resources/templates" + requestUrl).toPath());
+                }
+                else {
+                    body = Files.readAllBytes(
+                            new File("src/main/resources/static" + requestUrl).toPath());
                 }
             } else {
                 body = "Hello World".getBytes();
@@ -80,7 +60,7 @@ public class RequestHandler implements Runnable {
     private void response200Header(DataOutputStream dos, int lengthOfBodyContent, String contentType) {
         try {
             dos.writeBytes("HTTP/1.1 200 OK \r\n");
-            dos.writeBytes(String.format("Content-Type: %s;charset=utf-8\r\n", contentType));
+            dos.writeBytes("Content-Type: " + contentType + ";charset=utf-8\r\n");
             dos.writeBytes("Content-Length: " + lengthOfBodyContent + "\r\n");
             dos.writeBytes("\r\n");
         } catch (IOException e) {
