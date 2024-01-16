@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class HttpUtilTest {
     @Test
     @DisplayName("BufferedReader를 받아 HttpRequest 반환")
-    void getHttpRequest() throws IOException {
+    void testGetHttpRequest() throws IOException {
         String requestString = "GET /index.html HTTP/1.1\r\n" +
                 "Accept: text/html,*/*\r\n" +
                 "Accept-Encoding: gzip, deflate, br\r\n" +
@@ -32,7 +32,7 @@ class HttpUtilTest {
 
     @Test
     @DisplayName("Url을 받아 알맞은 Content-Type으로 반환")
-    void getContentTypeFromUrl() throws IOException {
+    void testGetContentTypeFromUrl() throws IOException {
         String htmlUrl = "/index.html";
         String htmlContentType = HttpUtil.getContentTypeFromUrl(htmlUrl);
         String javascriptUrl = "/index.js";
