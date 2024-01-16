@@ -16,12 +16,12 @@ import java.util.TreeMap;
 public class FileHandler {
     private static final Logger logger = LoggerFactory.getLogger(FileHandler.class);
 
-    private static FileHandler fileHandler = null;
-
     public static FileHandler getInstance() {
-        if (fileHandler == null)
-            fileHandler = new FileHandler();
-        return fileHandler;
+        return LazyHolder.INSTANCE;
+    }
+
+    private static class LazyHolder {
+        private static final FileHandler INSTANCE = new FileHandler();
     }
 
     public byte[] getFileAsBody(String url) throws IOException {
