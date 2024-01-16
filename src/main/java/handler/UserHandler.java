@@ -24,11 +24,11 @@ public class UserHandler {
     }
 
     public HttpResponse handle(HttpRequest request) {
-        Map<String, String> variables = request.getPathVariables();
-        String userId = variables.getOrDefault("userId", null);
-        String password = variables.getOrDefault("password", null);
-        String name = variables.getOrDefault("name", null);
-        String email = variables.getOrDefault("email", null);
+        Map<String, String> queryString = request.getQueryString();
+        String userId = queryString.getOrDefault("userId", null);
+        String password = queryString.getOrDefault("password", null);
+        String name = queryString.getOrDefault("name", null);
+        String email = queryString.getOrDefault("email", null);
 
         if (Arrays.asList(userId, password, name, email).contains(null)) {
             throw new RuntimeException("user property cannot be null");

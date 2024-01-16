@@ -21,21 +21,21 @@ public class HttpUtil {
 
         String method = httpRequestTokens[0];
         String url = httpRequestTokens[1];
-        Map<String, String> pathVariables = new TreeMap<>();
+        Map<String, String> queryString = new TreeMap<>();
 
         String[] url_split = url.split("\\?");
 
         url = url_split[0];
 
         if (url_split.length > 1) {
-            String[] pathVariablesArray = url_split[1].split("&");
+            String[] queryStringArray = url_split[1].split("&");
 
-            for (String variable: pathVariablesArray) {
-                String[] variable_split = variable.split("=");
-                if (variable_split.length != 2 || variable_split[1].isBlank())
-                    throw new IOException("Incorrect Path Variable");
+            for (String queryKeyValue: queryStringArray) {
+                String[] query_split = queryKeyValue.split("=");
+                if (query_split.length != 2 || query_split[1].isBlank())
+                    throw new IOException("Incorrect Query String");
 
-                pathVariables.put(variable_split[0], variable_split[1]);
+                queryString.put(query_split[0], query_split[1]);
             }
         }
 
@@ -44,7 +44,7 @@ public class HttpUtil {
 
         logRequestHeaderInfo(bufferedReader);
 
-        return new HttpRequest(method, url, pathVariables);
+        return new HttpRequest(method, url, queryString);
     }
 
     private static void logRequestHeaderInfo(BufferedReader bufferedReader) throws IOException {

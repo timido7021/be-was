@@ -5,12 +5,12 @@ import java.util.Map;
 public class HttpRequest {
     private String url;
     private String method;
-    private Map<String, String> pathVariables;
+    private Map<String, String> queryString;
 
-    public HttpRequest(String method, String url, Map<String, String> pathVariables) {
+    public HttpRequest(String method, String url, Map<String, String> queryString) {
         this.method = method;
         this.url = url;
-        this.pathVariables = pathVariables;
+        this.queryString = queryString;
     }
 
     public String getUrl() {
@@ -21,7 +21,7 @@ public class HttpRequest {
         return method;
     }
 
-    public Map<String, String> getPathVariables() {
-        return pathVariables;
+    public Map<String, String> getQueryString() {
+        return queryString;
     }
 }

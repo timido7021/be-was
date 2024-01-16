@@ -27,7 +27,7 @@ class HttpUtilTest {
 
         assertThat(httpRequest.getMethod()).isEqualTo("GET");
         assertThat(httpRequest.getUrl()).isEqualTo("/index.html");
-        assertThat(httpRequest.getPathVariables()).isEmpty();
+        assertThat(httpRequest.getQueryString()).isEmpty();
     }
 
     @Test
