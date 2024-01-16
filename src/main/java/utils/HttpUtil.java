@@ -15,7 +15,7 @@ import java.util.TreeMap;
 public class HttpUtil {
     private static final Logger logger = LoggerFactory.getLogger(HttpUtil.class);
 
-    public static HttpRequest getHttpRequest(BufferedReader bufferedReader) throws IOException {
+    public static HttpRequest getHttpRequest(BufferedReader bufferedReader) throws IOException, NullPointerException {
         String request = bufferedReader.readLine().trim();
         String[] httpRequestTokens = request.split(" ");
 
@@ -51,7 +51,8 @@ public class HttpUtil {
         String requestHeaderLine = "";
         String headerContent = "";
 
-        while (!(requestHeaderLine = bufferedReader.readLine().trim()).isEmpty()) {
+        while ((requestHeaderLine = bufferedReader.readLine()) != null && !requestHeaderLine.isEmpty()) {
+            requestHeaderLine = requestHeaderLine.trim();
             if (requestHeaderLine.startsWith("Host: ")) {
                 headerContent = requestHeaderLine.substring("Host: ".length());
                 logger.debug("요청하는 호스트의 이름과 포트번호: " + headerContent);
@@ -83,20 +84,15 @@ public class HttpUtil {
         }
     }
 
-    public static String getContentTypeFromUrl(String requestedUrl) {
+    public static String getContentTypeFromUrl(String requestedUrl) throws IOException {
         Path source = Paths.get(requestedUrl);
-        try {
             String contentType = Files.probeContentType(source);
             if (contentType == null) {
                 if (requestedUrl.endsWith(".woff"))
                     contentType = "font/woff";
                 else
-                    throw new Exception("cannot determine content-type.");
+                    throw new IOException("cannot determine content-type.");
             }
             return contentType;
-        } catch (Exception e) {
-            logger.error(e.getMessage());
-            return "text/plain";
-        }
     }
 }

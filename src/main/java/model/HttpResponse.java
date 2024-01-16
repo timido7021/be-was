@@ -1,12 +1,8 @@
 package model;
 
-import utils.HttpStatusCode;
-
 import java.util.Map;
 
 public class HttpResponse {
-    private HttpStatusCode statusCode;
-
     private HttpHeader header;
     private byte[] body;
 
@@ -21,10 +17,6 @@ public class HttpResponse {
 
     public static HttpResponse of(HttpStatusCode statusCode, byte[] body, Map<String, String> properties){
         return new HttpResponse(new HttpHeader(statusCode, properties), body);
-    }
-
-    public HttpStatusCode getStatusCode() {
-        return statusCode;
     }
 
     public HttpHeader getHeader() {

@@ -1,18 +1,16 @@
-package webserver;
+package handler;
 
 import java.io.*;
 import java.net.Socket;
 import java.util.Map;
 import java.util.TreeMap;
 
-import handler.FileHandler;
-import handler.UserHandler;
 import model.HttpRequest;
 import model.HttpResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import utils.HttpUtil;
-import utils.HttpStatusCode;
+import model.HttpStatusCode;
 
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
@@ -53,7 +51,7 @@ public class RequestHandler implements Runnable {
                 response = HttpResponse.emptyBodyResponse(HttpStatusCode.METHOD_NOT_ALLOWED, properties);
             }
             writeResponse(dos, response);
-        } catch (IOException e) {
+        } catch (IOException | NullPointerException e) {
             logger.error(e.getMessage());
         }
     }

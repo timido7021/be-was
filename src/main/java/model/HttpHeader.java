@@ -1,7 +1,5 @@
 package model;
 
-import utils.HttpStatusCode;
-
 import java.util.Map;
 
 public class HttpHeader {
@@ -21,16 +19,14 @@ public class HttpHeader {
     }
 
     @Override
-    public String toString() {
-        try {
-            String result = String.format("HTTP/1.1 %d %s\r\n", statusCode.getCode(), statusCode.getMessage());
-            for (Map.Entry<String, String> entry : properties.entrySet()) {
-                result += String.format("%s: %s\r\n", entry.getKey(), entry.getValue());
-            }
-            result += "\r\n";
-            return result;
-        } catch (RuntimeException e) {
-            throw new RuntimeException(e);
+    public String toString() throws RuntimeException {
+        String result = String.format("HTTP/1.1 %d %s\r\n", statusCode.getCode(), statusCode.getMessage());
+
+        for (Map.Entry<String, String> entry : properties.entrySet()) {
+            result += String.format("%s: %s\r\n", entry.getKey(), entry.getValue());
         }
+
+        result += "\r\n";
+        return result;
     }
 }
