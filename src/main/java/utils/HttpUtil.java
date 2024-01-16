@@ -1,5 +1,6 @@
 package utils;
 
+import model.HttpRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -8,26 +9,45 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.StringTokenizer;
+import java.util.Map;
+import java.util.TreeMap;
 
-public class HttpHeaderUtil {
-    private static final Logger logger = LoggerFactory.getLogger(HttpHeaderUtil.class);
+public class HttpUtil {
+    private static final Logger logger = LoggerFactory.getLogger(HttpUtil.class);
 
-    public static String[] getHttpMethodAndUrl(BufferedReader bufferedReader) throws IOException {
-        String httpRequest = bufferedReader.readLine().trim();
-        String[] httpRequestTokens = httpRequest.split(" ");
-        String httpMethod = httpRequestTokens[0];
-        String requestUrl = httpRequestTokens[1];
+    public static HttpRequest getHttpRequest(BufferedReader bufferedReader) throws IOException {
+        String request = bufferedReader.readLine().trim();
+        String[] httpRequestTokens = request.split(" ");
 
-        logger.debug("HTTP Method: " + httpMethod);
-        logger.debug("HTTP Request URL: " + requestUrl);
+        String method = httpRequestTokens[0];
+        String url = httpRequestTokens[1];
+        Map<String, String> pathVariables = new TreeMap<>();
 
-        logHeaderInfo(bufferedReader);
+        String[] url_split = url.split("\\?");
 
-        return httpRequestTokens;
+        url = url_split[0];
+
+        if (url_split.length > 1) {
+            String[] pathVariablesArray = url_split[1].split("&");
+
+            for (String variable: pathVariablesArray) {
+                String[] variable_split = variable.split("=");
+                if (variable_split.length != 2 || variable_split[1].isBlank())
+                    throw new IOException("Incorrect Path Variable");
+
+                pathVariables.put(variable_split[0], variable_split[1]);
+            }
+        }
+
+        logger.debug("HTTP Method: " + method);
+        logger.debug("HTTP Request URL: " + url);
+
+        logRequestHeaderInfo(bufferedReader);
+
+        return new HttpRequest(method, url, pathVariables);
     }
 
-    private static void logHeaderInfo(BufferedReader bufferedReader) throws IOException {
+    private static void logRequestHeaderInfo(BufferedReader bufferedReader) throws IOException {
         String requestHeaderLine = "";
         String headerContent = "";
 
@@ -63,8 +83,7 @@ public class HttpHeaderUtil {
         }
     }
 
-
-    public static String getContentType(String requestedUrl) {
+    public static String getContentTypeFromUrl(String requestedUrl) {
         Path source = Paths.get(requestedUrl);
         try {
             String contentType = Files.probeContentType(source);

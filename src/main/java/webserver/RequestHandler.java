@@ -2,20 +2,29 @@ package webserver;
 
 import java.io.*;
 import java.net.Socket;
-import java.nio.file.Files;
-import java.util.Arrays;
+import java.util.Map;
+import java.util.TreeMap;
 
+import handler.FileHandler;
+import handler.UserHandler;
+import model.HttpRequest;
+import model.HttpResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import utils.HttpHeaderUtil;
+import utils.HttpUtil;
+import utils.HttpStatusCode;
 
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
 
     private Socket connection;
+    private FileHandler fileHandler;
+    private UserHandler userHandler;
 
-    public RequestHandler(Socket connectionSocket) {
+    public RequestHandler(Socket connectionSocket, FileHandler fileHandler, UserHandler userHandler) {
         this.connection = connectionSocket;
+        this.fileHandler = fileHandler;
+        this.userHandler = userHandler;
     }
 
     public void run() {
@@ -25,55 +34,33 @@ public class RequestHandler implements Runnable {
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in));
 
-            String[] httpMethodAndUrl = HttpHeaderUtil.getHttpMethodAndUrl(bufferedReader);
-            String httpMethod = httpMethodAndUrl[0];
-            String requestUrl = httpMethodAndUrl[1];
+            HttpRequest httpRequest = HttpUtil.getHttpRequest(bufferedReader);
+            String method = httpRequest.getMethod();
+            String url = httpRequest.getUrl();
 
             DataOutputStream dos = new DataOutputStream(out);
-            byte[] body;
-            String contentType;
+            HttpResponse response;
 
-            if (httpMethod.equals("GET")) {
-                String mimeType = HttpHeaderUtil.getContentType(requestUrl);
-                contentType = mimeType;
-
-                if (mimeType.equals("text/html")) {
-                    body = Files.readAllBytes(
-                            new File("src/main/resources/templates" + requestUrl).toPath());
-                }
-                else {
-                    body = Files.readAllBytes(
-                            new File("src/main/resources/static" + requestUrl).toPath());
+            if (method.equals("GET")) {
+                if (url.startsWith("/user") && !url.endsWith(".html")) {
+                    response = userHandler.handle(httpRequest);
+                } else {
+                    response = fileHandler.handle(httpRequest);
                 }
             } else {
-                body = "Hello World".getBytes();
-                contentType = "text/html";
+                Map<String, String> properties = new TreeMap<>();
+                properties.put("Allow", "GET");
+                response = HttpResponse.emptyBodyResponse(HttpStatusCode.METHOD_NOT_ALLOWED, properties);
             }
-
-            response200Header(dos, body.length, contentType);
-            responseBody(dos, body);
+            writeResponse(dos, response);
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
     }
 
-    private void response200Header(DataOutputStream dos, int lengthOfBodyContent, String contentType) {
-        try {
-            dos.writeBytes("HTTP/1.1 200 OK \r\n");
-            dos.writeBytes("Content-Type: " + contentType + ";charset=utf-8\r\n");
-            dos.writeBytes("Content-Length: " + lengthOfBodyContent + "\r\n");
-            dos.writeBytes("\r\n");
-        } catch (IOException e) {
-            logger.error(e.getMessage());
-        }
-    }
-
-    private void responseBody(DataOutputStream dos, byte[] body) {
-        try {
-            dos.write(body, 0, body.length);
-            dos.flush();
-        } catch (IOException e) {
-            logger.error(e.getMessage());
-        }
+    private void writeResponse(DataOutputStream dos, HttpResponse response) throws IOException {
+        dos.writeBytes(response.getHeader().toString());
+        dos.write(response.getBody(), 0, response.getBody().length);
+        dos.flush();
     }
 }
