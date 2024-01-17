@@ -6,7 +6,7 @@ import model.HttpResponse;
 import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import model.HttpStatusCode;
+import model.HttpStatus;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -39,6 +39,6 @@ public class UserHandler {
         Map<String, String> properties = new TreeMap<>();
         properties.put("Location", "/user/login.html");
 
-        return HttpResponse.emptyBodyResponse(HttpStatusCode.SEE_OTHER, properties);
+        return HttpResponse.emptyBodyResponse(HttpStatus.SEE_OTHER, properties);
     }
 }

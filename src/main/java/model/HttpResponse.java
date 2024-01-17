@@ -3,23 +3,23 @@ package model;
 import java.util.Map;
 
 public class HttpResponse {
-    private HttpHeader header;
+    private ResponseHeader header;
     private byte[] body;
 
-    private HttpResponse(HttpHeader header, byte[] body) {
+    private HttpResponse(ResponseHeader header, byte[] body) {
         this.header = header;
         this.body = body;
     }
 
-    public static HttpResponse emptyBodyResponse(HttpStatusCode statusCode, Map<String, String> properties) {
-        return new HttpResponse(new HttpHeader(statusCode, properties), "".getBytes());
+    public static HttpResponse emptyBodyResponse(HttpStatus status, Map<String, String> properties) {
+        return new HttpResponse(new ResponseHeader(status, properties), "".getBytes());
     }
 
-    public static HttpResponse of(HttpStatusCode statusCode, byte[] body, Map<String, String> properties){
-        return new HttpResponse(new HttpHeader(statusCode, properties), body);
+    public static HttpResponse of(HttpStatus status, byte[] body, Map<String, String> properties){
+        return new HttpResponse(new ResponseHeader(status, properties), body);
     }
 
-    public HttpHeader getHeader() {
+    public ResponseHeader getHeader() {
         return header;
     }
 

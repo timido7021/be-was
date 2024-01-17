@@ -5,11 +5,14 @@ import model.HttpResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import utils.HttpUtil;
-import model.HttpStatusCode;
+import model.HttpStatus;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -44,6 +47,12 @@ public class FileHandler {
         properties.put("Content-Type", contentType);
         properties.put("Content-Length", String.valueOf(body.length));
 
-        return HttpResponse.of(HttpStatusCode.OK, body, properties);
+        SimpleDateFormat format = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss z", Locale.ENGLISH);
+        Date nowDate = new Date();
+
+        properties.put("Date", format.format(nowDate));
+        properties.put("Cache-Control", "max-age=3600");
+
+        return HttpResponse.of(HttpStatus.OK, body, properties);
     }
 }

@@ -1,6 +1,6 @@
 package model;
 
-public enum HttpStatusCode {
+public enum HttpStatus {
     OK(200, "OK"),
     SEE_OTHER(303, "See Other"),
     METHOD_NOT_ALLOWED(405, "Method Not Allowed"),
@@ -9,7 +9,7 @@ public enum HttpStatusCode {
     private final int code;
     private final String message;
 
-    HttpStatusCode(int code, String message) {
+    HttpStatus(int code, String message) {
         this.code = code;
         this.message = message;
     }
@@ -20,5 +20,10 @@ public enum HttpStatusCode {
 
     public String getMessage() {
         return message;
+    }
+
+    @Override
+    public String toString() {
+        return "statusCode = " + code + ",statusMsg = " + getMessage();
     }
 }
