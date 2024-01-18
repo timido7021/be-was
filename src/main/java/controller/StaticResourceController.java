@@ -5,19 +5,22 @@ import http.HttpResponse;
 import http.header.ResponseHeader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import utils.DateTimeUtil;
 import utils.HttpUtil;
 import http.status.HttpStatus;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 
-public class ResourceController {
-    private static final Logger logger = LoggerFactory.getLogger(ResourceController.class);
+public class StaticResourceController {
+    private static final Logger logger = LoggerFactory.getLogger(StaticResourceController.class);
 
-    public static ResourceController getInstance() {
+    public static StaticResourceController getInstance() {
         return LazyHolder.INSTANCE;
     }
 
@@ -32,34 +35,34 @@ public class ResourceController {
     );
 
     private static class LazyHolder {
-        private static final ResourceController INSTANCE = new ResourceController();
+        private static final StaticResourceController INSTANCE = new StaticResourceController();
     }
 
-    public byte[] getFileAsBody(String url) throws IOException {
+    public File getFileFromUrl(String url) throws IOException {
         String contentType = HttpUtil.getContentTypeFromUrl(url);
         if (contentType.equals("text/html")) {
-            return Files.readAllBytes(
-                    new File("src/main/resources/templates" + url).toPath());
-        }
-        else {
-            return Files.readAllBytes(
-                    new File("src/main/resources/static" + url).toPath());
+            return new File("src/main/resources/templates" + url);
+        } else {
+            return new File("src/main/resources/static" + url);
         }
     }
 
     public void handle(HttpRequest request, HttpResponse response) throws IOException {
         String contentType = HttpUtil.getContentTypeFromUrl(request.getUrl());
-        byte[] body = getFileAsBody(request.getUrl());
+        File file = getFileFromUrl(request.getUrl());
+        byte[] body = Files.readAllBytes(file.toPath());
 
         Map<String, String> properties = new TreeMap<>();
         properties.put("Content-Type", contentType);
         properties.put("Content-Length", String.valueOf(body.length));
 
-        SimpleDateFormat format = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss z", Locale.ENGLISH);
-        Date nowDate = new Date();
+        LocalDateTime nowDate = LocalDateTime.now();
+        LocalDateTime lastModified = LocalDateTime.ofInstant(
+                Instant.ofEpochMilli(file.lastModified()), ZoneId.systemDefault()
+        );
 
-        properties.put("Date", format.format(nowDate));
-        properties.put("Cache-Control", "public, max-age=60");
+        properties.put("Date", DateTimeUtil.getGMTDateString(nowDate));
+        properties.put("Last-Modified", DateTimeUtil.getGMTDateString(lastModified));
 
         response.setHeader(ResponseHeader.of(HttpStatus.OK, properties));
         response.setBody(body);

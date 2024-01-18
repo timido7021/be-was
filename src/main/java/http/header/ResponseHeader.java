@@ -2,6 +2,7 @@ package http.header;
 
 import http.status.HttpStatus;
 
+import java.io.IOException;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
@@ -35,7 +36,7 @@ public class ResponseHeader extends Header {
     }
 
     @Override
-    public String toString() throws RuntimeException {
+    public String toString() {
         String result = String.format("HTTP/1.1 %d %s\r\n", status.getCode(), status.getMessage());
 
         result += properties.entrySet().stream()

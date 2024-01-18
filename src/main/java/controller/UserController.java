@@ -36,7 +36,6 @@ public class UserController {
 
         Map<String, String> properties = new TreeMap<>();
 
-
         if (Stream.of(userId, password, name, email)
                 .anyMatch(e->e.isBlank())
         ) {

@@ -1,6 +1,6 @@
 package dispatcher;
 
-import controller.ResourceController;
+import controller.StaticResourceController;
 import controller.UserController;
 import http.HttpRequest;
 import http.HttpResponse;
@@ -12,7 +12,7 @@ import java.util.Map;
 
 public class RequestDispatcher {
     private final UserController userController = UserController.getInstance();
-    private final ResourceController resourceController = ResourceController.getInstance();
+    private final StaticResourceController staticResourceController = StaticResourceController.getInstance();
 
     public static RequestDispatcher getInstance() {
         return RequestDispatcher.LazyHolder.INSTANCE;
@@ -34,10 +34,10 @@ public class RequestDispatcher {
                         ResponseHeader.of(HttpStatus.SEE_OTHER,  Map.of("Location", "/index.html"))
                 );
             }
-            else if (ResourceController.extensions.stream().anyMatch(
+            else if (StaticResourceController.extensions.stream().anyMatch(
                     extension -> url.endsWith(extension)
             )) {
-                resourceController.handle(request, response);
+                staticResourceController.handle(request, response);
             } else {
                 userController.handle(request, response);
             }
