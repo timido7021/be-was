@@ -27,8 +27,8 @@ public class RequestDispatcher {
         String method = request.getMethod();
         String url = request.getUrl();
 
-        if (method.equals("GET")) { // Redirect - file - service
-            if (url.equals("/")) { // html 같은 정적 파일
+        if (method.equals("GET")) {
+            if (url.equals("/")) {
                 response.setEmptyBody();
                 response.setHeader(
                         ResponseHeader.of(HttpStatus.SEE_OTHER,  Map.of("Location", "/index.html"))
