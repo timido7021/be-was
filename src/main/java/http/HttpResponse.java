@@ -1,4 +1,7 @@
-package model;
+package http;
+
+import http.header.ResponseHeader;
+import http.status.HttpStatus;
 
 import java.util.Map;
 

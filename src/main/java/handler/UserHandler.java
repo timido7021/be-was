@@ -1,12 +1,12 @@
 package handler;
 
 import db.Database;
-import model.HttpRequest;
-import model.HttpResponse;
+import http.HttpRequest;
+import http.HttpResponse;
 import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import model.HttpStatus;
+import http.status.HttpStatus;
 
 import java.util.Arrays;
 import java.util.Map;

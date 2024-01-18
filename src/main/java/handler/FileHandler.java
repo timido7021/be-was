@@ -1,11 +1,11 @@
 package handler;
 
-import model.HttpRequest;
-import model.HttpResponse;
+import http.HttpRequest;
+import http.HttpResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import utils.HttpUtil;
-import model.HttpStatus;
+import http.status.HttpStatus;
 
 import java.io.File;
 import java.io.IOException;

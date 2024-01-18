@@ -5,12 +5,12 @@ import java.net.Socket;
 import java.util.Map;
 import java.util.TreeMap;
 
-import model.HttpRequest;
-import model.HttpResponse;
+import http.HttpRequest;
+import http.HttpResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import utils.HttpUtil;
-import model.HttpStatus;
+import http.status.HttpStatus;
 
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);

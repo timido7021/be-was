@@ -1,4 +1,4 @@
-package model;
+package http.status;
 
 public enum HttpStatus {
     OK(200, "OK"),

@@ -1,7 +1,7 @@
 package utils;
 
-import model.RequestHeader;
-import model.HttpRequest;
+import http.header.RequestHeader;
+import http.HttpRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

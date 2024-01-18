@@ -1,9 +1,11 @@
-package model;
+package http.header;
+
+import http.status.HttpStatus;
 
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class ResponseHeader {
+public class ResponseHeader extends Header {
     private HttpStatus status;
     private Map<String, String> properties;
 

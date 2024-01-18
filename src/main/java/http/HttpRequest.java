@@ -1,4 +1,6 @@
-package model;
+package http;
+
+import http.header.RequestHeader;
 
 import java.util.Map;
 import java.util.stream.Collectors;

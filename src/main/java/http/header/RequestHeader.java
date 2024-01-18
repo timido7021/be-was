@@ -1,11 +1,11 @@
-package model;
+package http.header;
 
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
-public class RequestHeader {
+public class RequestHeader extends Header {
     private Map<String, String> properties;
 
     public RequestHeader(Map<String, String> properties) {
@@ -29,10 +29,10 @@ public class RequestHeader {
         requiredHeaders.add("Accept-Encoding");
 
         return properties.entrySet().stream().map(e -> {
-            if (requiredHeaders.contains(e.getKey()))
-                return e.getKey() + ": " + e.getValue();
-            else return "";
-        })
+                    if (requiredHeaders.contains(e.getKey()))
+                        return e.getKey() + ": " + e.getValue();
+                    else return "";
+                })
                 .filter(e -> !e.isEmpty())
                 .collect(Collectors.joining("|"));
     }
