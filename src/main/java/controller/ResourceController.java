@@ -1,4 +1,4 @@
-package handler;
+package controller;
 
 import http.HttpRequest;
 import http.HttpResponse;
@@ -14,10 +14,10 @@ import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-public class FileHandler {
-    private static final Logger logger = LoggerFactory.getLogger(FileHandler.class);
+public class ResourceController {
+    private static final Logger logger = LoggerFactory.getLogger(ResourceController.class);
 
-    public static FileHandler getInstance() {
+    public static ResourceController getInstance() {
         return LazyHolder.INSTANCE;
     }
 
@@ -32,7 +32,7 @@ public class FileHandler {
     );
 
     private static class LazyHolder {
-        private static final FileHandler INSTANCE = new FileHandler();
+        private static final ResourceController INSTANCE = new ResourceController();
     }
 
     public byte[] getFileAsBody(String url) throws IOException {

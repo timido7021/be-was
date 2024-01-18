@@ -1,7 +1,7 @@
 package dispatcher;
 
-import handler.FileHandler;
-import handler.UserHandler;
+import controller.ResourceController;
+import controller.UserController;
 import http.HttpRequest;
 import http.HttpResponse;
 import http.header.ResponseHeader;
@@ -11,8 +11,8 @@ import java.io.IOException;
 import java.util.Map;
 
 public class RequestDispatcher {
-    private final UserHandler userHandler = UserHandler.getInstance();
-    private final FileHandler fileHandler = FileHandler.getInstance();
+    private final UserController userController = UserController.getInstance();
+    private final ResourceController resourceController = ResourceController.getInstance();
 
     public static RequestDispatcher getInstance() {
         return RequestDispatcher.LazyHolder.INSTANCE;
@@ -34,12 +34,12 @@ public class RequestDispatcher {
                         ResponseHeader.of(HttpStatus.SEE_OTHER,  Map.of("Location", "/index.html"))
                 );
             }
-            else if (FileHandler.extensions.stream().anyMatch(
+            else if (ResourceController.extensions.stream().anyMatch(
                     extension -> url.endsWith(extension)
             )) {
-                fileHandler.handle(request, response);
+                resourceController.handle(request, response);
             } else {
-                userHandler.handle(request, response);
+                userController.handle(request, response);
             }
         } else {
             response.setEmptyBody();
