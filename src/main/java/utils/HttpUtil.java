@@ -18,7 +18,7 @@ import java.util.TreeMap;
 public class HttpUtil {
     private static final Logger logger = LoggerFactory.getLogger(HttpUtil.class);
 
-    public static HttpRequest getHttpRequest(BufferedReader bufferedReader) throws IOException, NullPointerException {
+    public static HttpRequest getHttpRequest(BufferedReader bufferedReader) throws IOException {
         String request = bufferedReader.readLine().trim();
         String[] httpRequestTokens = request.split(" ");
 
