@@ -56,10 +56,12 @@ public class HttpUtil {
             requestHeaderLine = requestHeaderLine.trim();
 
             String[] line = requestHeaderLine.split(":");
+            line[1] = line[1].trim();
 
-            if (line.length >= 3)
+            if (line.length >= 3) {
                 for (int idx = 2; idx < line.length; idx++)
                     line[1] += ":" + line[idx];
+            }
 
             properties.put(line[0], line[1]);
         }

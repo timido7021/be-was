@@ -34,6 +34,6 @@ public class RequestHeader extends Header {
                     else return "";
                 })
                 .filter(e -> !e.isEmpty())
-                .collect(Collectors.joining("|"));
+                .collect(Collectors.joining(" | "));
     }
 }

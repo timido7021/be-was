@@ -39,7 +39,7 @@ public class HttpRequest {
     public String toString() {
         String query = queryString.entrySet().stream()
                 .map(e -> e.getKey() + ":" + e.getValue())
-                .collect(Collectors.joining("|"));
+                .collect(Collectors.joining(" | "));
 
         return "HttpRequest(method = " + method + ",url = " +
                 url + ", queryString = {" + query +
