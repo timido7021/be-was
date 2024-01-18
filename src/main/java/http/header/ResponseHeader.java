@@ -3,15 +3,24 @@ package http.header;
 import http.status.HttpStatus;
 
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 public class ResponseHeader extends Header {
     private HttpStatus status;
     private Map<String, String> properties;
 
-    public ResponseHeader(HttpStatus status, Map<String, String> properties) {
+    private ResponseHeader(HttpStatus status, Map<String, String> properties) {
         this.status = status;
         this.properties = properties;
+    }
+
+    public static ResponseHeader of(HttpStatus status, Map<String, String> properties) {
+        return new ResponseHeader(status, properties);
+    }
+
+    public static ResponseHeader of() {
+        return new ResponseHeader(HttpStatus.OK, new TreeMap<>());
     }
 
     public HttpStatus getStatus() {

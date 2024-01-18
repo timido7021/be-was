@@ -14,12 +14,12 @@ public class HttpResponse {
         this.body = body;
     }
 
-    public static HttpResponse emptyBodyResponse(HttpStatus status, Map<String, String> properties) {
-        return new HttpResponse(new ResponseHeader(status, properties), "".getBytes());
+    public static HttpResponse of(HttpStatus status, byte[] body, Map<String, String> properties){
+        return new HttpResponse(ResponseHeader.of(status, properties), body);
     }
 
-    public static HttpResponse of(HttpStatus status, byte[] body, Map<String, String> properties){
-        return new HttpResponse(new ResponseHeader(status, properties), body);
+    public static HttpResponse of() {
+        return new HttpResponse(ResponseHeader.of(), "".getBytes());
     }
 
     public ResponseHeader getHeader() {
@@ -28,5 +28,17 @@ public class HttpResponse {
 
     public byte[] getBody() {
         return body;
+    }
+
+    public void setHeader(ResponseHeader header) {
+        this.header = header;
+    }
+
+    public void setBody(byte[] body) {
+        this.body = body;
+    }
+
+    public void setEmptyBody() {
+        this.body = "".getBytes();
     }
 }

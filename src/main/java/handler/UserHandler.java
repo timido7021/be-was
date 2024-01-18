@@ -3,6 +3,7 @@ package handler;
 import db.Database;
 import http.HttpRequest;
 import http.HttpResponse;
+import http.header.ResponseHeader;
 import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +24,7 @@ public class UserHandler {
         private static final UserHandler INSTANCE = new UserHandler();
     }
 
-    public HttpResponse handle(HttpRequest request) {
+    public void handle(HttpRequest request, HttpResponse response) {
         Map<String, String> queryString = request.getQueryString();
         String userId = queryString.getOrDefault("userId", null);
         String password = queryString.getOrDefault("password", null);
@@ -39,6 +40,8 @@ public class UserHandler {
         Map<String, String> properties = new TreeMap<>();
         properties.put("Location", "/user/login.html");
 
-        return HttpResponse.emptyBodyResponse(HttpStatus.SEE_OTHER, properties);
+        response.setHeader(
+                ResponseHeader.of(HttpStatus.SEE_OTHER, properties)
+        );
     }
 }

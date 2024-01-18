@@ -2,6 +2,7 @@ package handler;
 
 import http.HttpRequest;
 import http.HttpResponse;
+import http.header.ResponseHeader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import utils.HttpUtil;
@@ -11,10 +12,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 public class FileHandler {
     private static final Logger logger = LoggerFactory.getLogger(FileHandler.class);
@@ -22,6 +20,16 @@ public class FileHandler {
     public static FileHandler getInstance() {
         return LazyHolder.INSTANCE;
     }
+
+    public static List<String> extensions = List.of(
+            ".html",
+            ".css",
+            ".js",
+            ".ttf",
+            ".woff",
+            ".png",
+            ".ico"
+    );
 
     private static class LazyHolder {
         private static final FileHandler INSTANCE = new FileHandler();
@@ -39,7 +47,7 @@ public class FileHandler {
         }
     }
 
-    public HttpResponse handle(HttpRequest request) throws IOException {
+    public void handle(HttpRequest request, HttpResponse response) throws IOException {
         String contentType = HttpUtil.getContentTypeFromUrl(request.getUrl());
         byte[] body = getFileAsBody(request.getUrl());
 
@@ -51,8 +59,9 @@ public class FileHandler {
         Date nowDate = new Date();
 
         properties.put("Date", format.format(nowDate));
-        properties.put("Cache-Control", "max-age=3600");
+        properties.put("Cache-Control", "public, max-age=60");
 
-        return HttpResponse.of(HttpStatus.OK, body, properties);
+        response.setHeader(ResponseHeader.of(HttpStatus.OK, properties));
+        response.setBody(body);
     }
 }
