@@ -10,8 +10,8 @@ import http.status.HttpStatus;
 import service.UserService;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.stream.Stream;
 
 public class UserController {
@@ -34,7 +34,7 @@ public class UserController {
         String name = queryString.getOrDefault("name", "");
         String email = queryString.getOrDefault("email", "");
 
-        Map<String, String> properties = new TreeMap<>();
+        Map<String, String> properties = new HashMap<>();
 
         if (Stream.of(userId, password, name, email)
                 .anyMatch(e->e.isBlank())

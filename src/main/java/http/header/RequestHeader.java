@@ -1,14 +1,14 @@
 package http.header;
 
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class RequestHeader extends Header {
     private Map<String, String> properties;
 
-    public RequestHeader(Map<String, String> properties) {
+    private RequestHeader(Map<String, String> properties) {
         this.properties = properties;
     }
 
@@ -16,9 +16,30 @@ public class RequestHeader extends Header {
         return properties;
     }
 
+    public static RequestHeader createFromReader(BufferedReader reader) throws IOException {
+        String requestHeaderLine = "";
+
+        Map<String, String> properties = new HashMap<>();
+
+        while ((requestHeaderLine = reader.readLine()) != null && !requestHeaderLine.isEmpty()) {
+            requestHeaderLine = requestHeaderLine.trim();
+
+            String[] line = requestHeaderLine.split(":");
+            line[1] = line[1].trim();
+
+            if (line.length >= 3) {
+                for (int idx = 2; idx < line.length; idx++)
+                    line[1] += ":" + line[idx];
+            }
+
+            properties.put(line[0], line[1]);
+        }
+        return new RequestHeader(properties);
+    }
+
     @Override
     public String toString() {
-        Set<String> requiredHeaders = new TreeSet<>();
+        Set<String> requiredHeaders = new HashSet<>();
 
         requiredHeaders.add("Host");
         requiredHeaders.add("Connection");

@@ -2,9 +2,8 @@ package http.header;
 
 import http.status.HttpStatus;
 
-import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 public class ResponseHeader extends Header {
@@ -21,7 +20,7 @@ public class ResponseHeader extends Header {
     }
 
     public static ResponseHeader of() {
-        return new ResponseHeader(HttpStatus.OK, new TreeMap<>());
+        return new ResponseHeader(HttpStatus.OK, new HashMap<>());
     }
 
     public HttpStatus getStatus() {

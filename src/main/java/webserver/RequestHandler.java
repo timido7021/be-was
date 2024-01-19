@@ -2,14 +2,13 @@ package webserver;
 
 import java.io.*;
 import java.net.Socket;
-import java.util.TreeMap;
+import java.util.HashMap;
 
 import dispatcher.RequestDispatcher;
 import http.HttpRequest;
 import http.HttpResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import utils.HttpUtil;
 import http.status.HttpStatus;
 
 public class RequestHandler implements Runnable {
@@ -30,14 +29,14 @@ public class RequestHandler implements Runnable {
             RequestDispatcher dispatcher = RequestDispatcher.getInstance();
 
             try {
-                HttpRequest httpRequest = HttpUtil.getHttpRequest(bufferedReader);
+                HttpRequest httpRequest = HttpRequest.createFromReader(bufferedReader);
                 logger.debug(httpRequest.toString());
                 HttpResponse httpResponse = HttpResponse.of();
                 dispatcher.dispatchHandler(httpRequest, httpResponse);
 
                 writeResponse(dos, httpResponse);
             } catch (Exception e) {
-                writeResponse(dos, HttpResponse.of(HttpStatus.INTERNAL_SERVER_ERROR, "".getBytes(), new TreeMap<>()));
+                writeResponse(dos, HttpResponse.of(HttpStatus.INTERNAL_SERVER_ERROR, "".getBytes(), new HashMap<>()));
                 logger.error("Serve request: " + e.getMessage());
             }
         } catch (IOException e) {
