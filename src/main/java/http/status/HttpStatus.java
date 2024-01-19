@@ -5,6 +5,7 @@ public enum HttpStatus {
     SEE_OTHER(303, "See Other"),
     NOT_MODIFIED(304, "Not Modified"),
     BAD_REQUEST(400, "Bad Request"),
+    NOT_FOUND(404, "Not Found"),
     METHOD_NOT_ALLOWED(405, "Method Not Allowed"),
     INTERNAL_SERVER_ERROR(500, "Internal Server Error");
 

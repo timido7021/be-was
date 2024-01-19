@@ -41,6 +41,17 @@ public class StaticResourceController {
     public void handle(HttpRequest request, HttpResponse response) throws IOException {
         File file = FileUtil.getFileFromUrl(request.getUrl());
         String contentType = FileUtil.getContentType(file.toPath());
+        Map<String, String> properties = new HashMap<>();
+
+
+        if (!file.exists()){
+            response.setHeader(
+                    ResponseHeader.of(HttpStatus.NOT_FOUND, properties)
+            );
+            response.setEmptyBody();
+
+            return;
+        }
 
         byte[] body = Files.readAllBytes(file.toPath());
 
@@ -53,15 +64,11 @@ public class StaticResourceController {
                 ZoneId.systemDefault()
         );
 
-
-        Map<String, String> properties = new HashMap<>();
-
         properties.put("Content-Type", contentType);
         properties.put("Cache-Control", "public, max-age=30");
         properties.put("Content-Length", String.valueOf(body.length));
         properties.put("Date", DateTimeUtil.getGMTDateString(nowDate));
         properties.put("Last-Modified", DateTimeUtil.getGMTDateString(lastModified));
-
 
         String modifiedSince = request.getRequestHeader()
                 .getProperties()
