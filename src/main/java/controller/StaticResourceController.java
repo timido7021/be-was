@@ -40,7 +40,7 @@ public class StaticResourceController {
 
     public void handle(HttpRequest request, HttpResponse response) throws IOException {
         File file = FileUtil.getFileFromUrl(request.getUrl());
-        String contentType = Files.probeContentType(file.toPath());
+        String contentType = FileUtil.getContentType(file.toPath());
 
         byte[] body = Files.readAllBytes(file.toPath());
 
