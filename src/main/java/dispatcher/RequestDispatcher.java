@@ -6,6 +6,7 @@ import http.HttpRequest;
 import http.HttpResponse;
 import http.header.ResponseHeader;
 import http.status.HttpStatus;
+import utils.FileExtension;
 
 import java.io.IOException;
 import java.util.Map;
@@ -34,9 +35,9 @@ public class RequestDispatcher {
                         ResponseHeader.of(HttpStatus.SEE_OTHER,  Map.of("Location", "/index.html"))
                 );
             }
-            else if (StaticResourceController.extensions.stream().anyMatch(
-                    extension -> url.endsWith(extension)
-            )) {
+            else if (FileExtension.extensions.stream()
+                    .anyMatch(extension -> url.endsWith(extension))
+            ) {
                 staticResourceController.handle(request, response);
             } else {
                 userController.handle(request, response);

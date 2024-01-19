@@ -24,16 +24,6 @@ public class StaticResourceController {
         return LazyHolder.INSTANCE;
     }
 
-    public static List<String> extensions = List.of(
-            ".html",
-            ".css",
-            ".js",
-            ".ttf",
-            ".woff",
-            ".png",
-            ".ico"
-    );
-
     private static class LazyHolder {
         private static final StaticResourceController INSTANCE = new StaticResourceController();
     }
