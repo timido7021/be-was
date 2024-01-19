@@ -46,15 +46,42 @@ public class StaticResourceController {
 
         LocalDateTime nowDate = LocalDateTime.now();
         LocalDateTime lastModified = LocalDateTime.ofInstant(
-                Instant.ofEpochMilli(file.lastModified()), ZoneId.systemDefault()
+                Instant.ofEpochSecond(
+                        Instant.ofEpochMilli(file.lastModified())
+                                .getEpochSecond()
+                ),
+                ZoneId.systemDefault()
         );
+
 
         Map<String, String> properties = new HashMap<>();
 
         properties.put("Content-Type", contentType);
+        properties.put("Cache-Control", "public, max-age=30");
         properties.put("Content-Length", String.valueOf(body.length));
         properties.put("Date", DateTimeUtil.getGMTDateString(nowDate));
         properties.put("Last-Modified", DateTimeUtil.getGMTDateString(lastModified));
+
+
+        String modifiedSince = request.getRequestHeader()
+                .getProperties()
+                .getOrDefault("If-Modified-Since", "");
+
+        if (!modifiedSince.isBlank()) {
+            try {
+                if (DateTimeUtil.parseGMTDateString(modifiedSince)
+                        .isEqual(lastModified)
+                ) {
+                    response.setHeader(
+                            ResponseHeader.of(HttpStatus.NOT_MODIFIED, properties)
+                    );
+                    response.setEmptyBody();
+                    return;
+                }
+            } catch (Exception e) {
+                logger.error(e.getMessage());
+            }
+        }
 
         response.setHeader(ResponseHeader.of(HttpStatus.OK, properties));
         response.setBody(body);

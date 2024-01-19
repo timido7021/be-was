@@ -11,4 +11,8 @@ public class DateTimeUtil {
     public static String getGMTDateString(LocalDateTime localDate) {
         return formatter.format(localDate.atZone(ZoneId.of("GMT")));
     }
+
+    public static LocalDateTime parseGMTDateString(String dateString) {
+        return LocalDateTime.parse(dateString, formatter);
+    }
 }
