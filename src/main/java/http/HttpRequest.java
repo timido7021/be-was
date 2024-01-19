@@ -52,7 +52,6 @@ public class HttpRequest {
             }
         }
         RequestHeader header = RequestHeader.createFromReader(reader);
-        logger.debug(header.toString());
 
         return new HttpRequest(method, url, queryString, header);
     }

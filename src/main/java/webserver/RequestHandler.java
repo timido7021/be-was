@@ -37,7 +37,7 @@ public class RequestHandler implements Runnable {
                 writeResponse(dos, httpResponse);
             } catch (Exception e) {
                 writeResponse(dos, HttpResponse.of(HttpStatus.INTERNAL_SERVER_ERROR, "".getBytes(), new HashMap<>()));
-                logger.error("Serve request: " + e.getMessage());
+                logger.error("Server request: " + e.getMessage());
             }
         } catch (IOException e) {
             logger.error("Connection: " + e.getMessage());
