@@ -32,21 +32,25 @@ public class RequestDispatcher {
             if (url.equals("/")) {
                 response.setEmptyBody();
                 response.setHeader(
-                        ResponseHeader.of(HttpStatus.SEE_OTHER,  Map.of("Location", "/index.html"))
+                        ResponseHeader.of(HttpStatus.SEE_OTHER, Map.of("Location", "/index.html"))
                 );
             }
-            else if (FileExtension.extensions.stream()
-                    .anyMatch(extension -> url.endsWith(extension))
-            ) {
+            if (FileExtension.extensions.stream()
+                    .anyMatch(extension -> url.endsWith(extension))) {
                 staticResourceController.handle(request, response);
-            } else {
-                userController.handle(request, response);
             }
-        } else {
-            response.setEmptyBody();
-            response.setHeader(
-                    ResponseHeader.of(HttpStatus.METHOD_NOT_ALLOWED, Map.of("Allow", "GET"))
-            );
+            return;
         }
+
+        if (method.equals("POST")) {
+            if (url.equals("/user/create"))
+                userController.signup(request, response);
+            return;
+        }
+
+        response.setEmptyBody();
+        response.setHeader(
+                ResponseHeader.of(HttpStatus.METHOD_NOT_ALLOWED, Map.of("Allow", "GET"))
+        );
     }
 }

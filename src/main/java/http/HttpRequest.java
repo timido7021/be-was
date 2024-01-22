@@ -1,5 +1,6 @@
 package http;
 
+import http.body.RequestBody;
 import http.header.RequestHeader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -7,6 +8,7 @@ import webserver.WebServer;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.StringReader;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
@@ -16,15 +18,20 @@ import java.util.stream.Collectors;
 public class HttpRequest {
     private final String url;
     private final String method;
+
+
     private Map<String, String> queryString;
     private static final Logger logger = LoggerFactory.getLogger(HttpRequest.class);
     private RequestHeader requestHeader;
 
-    private HttpRequest(String method, String url, Map<String, String> queryString, RequestHeader requestHeader) {
+    private RequestBody requestBody;
+
+    private HttpRequest(String method, String url, Map<String, String> queryString, RequestHeader requestHeader, RequestBody requestBody) {
         this.method = method;
         this.url = url;
         this.queryString = queryString;
         this.requestHeader = requestHeader;
+        this.requestBody = requestBody;
     }
 
     public static HttpRequest createFromReader(BufferedReader reader) throws IOException {
@@ -51,9 +58,16 @@ public class HttpRequest {
                 queryString.put(query_split[0], query_split[1]);
             }
         }
+
         RequestHeader header = RequestHeader.createFromReader(reader);
 
-        return new HttpRequest(method, url, queryString, header);
+        RequestBody body = RequestBody.createEmptyBody();
+        if (header.getProperties().containsKey("Content-Length")) {
+            int contentLength = Integer.parseInt(header.getProperties().get("Content-Length"));
+            body = RequestBody.createFromReader(reader, contentLength);
+        }
+
+        return new HttpRequest(method, url, queryString, header, body);
     }
 
 
@@ -71,6 +85,10 @@ public class HttpRequest {
 
     public RequestHeader getRequestHeader() {
         return requestHeader;
+    }
+
+    public RequestBody getRequestBody() {
+        return requestBody;
     }
 
     @Override
