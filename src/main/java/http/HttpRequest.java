@@ -4,13 +4,10 @@ import http.body.RequestBody;
 import http.header.RequestHeader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import webserver.WebServer;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.StringReader;
 import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -54,7 +51,7 @@ public class HttpRequest {
                 if (query_split.length != 2 || query_split[1].isBlank())
                     throw new IOException("Incorrect Query String");
 
-                query_split[1] = URLDecoder.decode(query_split[1], StandardCharsets.UTF_8);
+                query_split[1] = URLDecoder.decode(query_split[1], "UTF-8");
                 queryString.put(query_split[0], query_split[1]);
             }
         }
