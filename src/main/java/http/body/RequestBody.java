@@ -20,7 +20,7 @@ public class RequestBody {
     public static RequestBody createFromReader(BufferedReader reader, int contentLength) throws IOException {
         StringBuilder stringBuilder = new StringBuilder();
 
-        char[] bodyRawString = new char[contentLength + 3];
+        char[] bodyRawString = new char[contentLength];
 
         reader.read(bodyRawString, 0, contentLength);
 
