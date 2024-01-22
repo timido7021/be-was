@@ -6,8 +6,19 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Set;
 
 public class FileUtil {
+    public static Set<String> extensions = Set.of(
+            ".html",
+            ".css",
+            ".js",
+            ".ttf",
+            ".woff",
+            ".png",
+            ".ico"
+    );
+
     public static File getFileFromUrl(String url) throws IOException {
         Path source = Paths.get(url);
         String contentType = getContentType(source);
