@@ -31,7 +31,6 @@ public class StaticResourceController {
         String contentType = FileUtil.getContentType(request.getUrl());
         Map<String, String> properties = new HashMap<>();
 
-
         if (!file.exists()) {
             response.setHeader(
                     ResponseHeader.of(HttpStatus.NOT_FOUND, properties)

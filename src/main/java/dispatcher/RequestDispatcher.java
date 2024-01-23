@@ -6,9 +6,10 @@ import http.HttpRequest;
 import http.HttpResponse;
 import http.header.ResponseHeader;
 import http.status.HttpStatus;
-import utils.FileUtil;
+import utils.MethodMapper;
 
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.util.Map;
 
 public class RequestDispatcher {
@@ -25,32 +26,24 @@ public class RequestDispatcher {
 
 
     public void dispatchHandler(HttpRequest request, HttpResponse response) throws IOException {
-        String method = request.getMethod();
+        String httpMethod = request.getMethod();
         String url = request.getUrl();
 
-        if (method.equals("GET")) {
+        Method method = MethodMapper.findMethodByRequest(request);
+        if (method != null) { // 요청에 적합한 메소드가 없을 때
+            MethodMapper.invokeMethod(method, request, response);
+            return;
+        }
+        // 정적파일 및 리다이렉팅
+        if (httpMethod.equals("GET")) {
             if (url.equals("/")) {
                 response.setEmptyBody();
                 response.setHeader(
                         ResponseHeader.of(HttpStatus.FOUND, Map.of("Location", "/index.html"))
                 );
-            }
-            if (FileUtil.extensions.stream()
-                    .anyMatch(extension -> url.endsWith(extension))) {
-                staticResourceController.handle(request, response);
-            }
-            return;
-        }
-
-        if (method.equals("POST")) {
-            if (url.equals("/user/create")) {
-                userController.signup(request, response);
                 return;
             }
-            response.setEmptyBody();
-            response.setHeader(
-                    ResponseHeader.of(HttpStatus.NOT_FOUND, Map.of())
-            );
+            staticResourceController.handle(request, response);
             return;
         }
 

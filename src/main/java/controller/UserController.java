@@ -1,8 +1,8 @@
 package controller;
 
+import annotations.PostMapping;
 import http.HttpRequest;
 import http.HttpResponse;
-import http.body.RequestBody;
 import http.header.ResponseHeader;
 import model.User;
 import org.slf4j.Logger;
@@ -28,6 +28,7 @@ public class UserController {
 
     private final UserService userService = UserService.getInstance();
 
+    @PostMapping(route = "/user/create")
     public void signup(HttpRequest request, HttpResponse response) throws IOException {
         Map<String, String> userProperties = request.getRequestBody().convertRawStringAsMap();
         String userId = userProperties.getOrDefault("userId", "");
