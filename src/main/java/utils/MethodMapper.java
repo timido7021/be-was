@@ -6,6 +6,8 @@ import http.HttpRequest;
 import http.HttpResponse;
 import http.header.ResponseHeader;
 import http.status.HttpStatus;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.lang.reflect.Method;
@@ -13,6 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MethodMapper {
+    private static final Logger logger = LoggerFactory.getLogger(MethodMapper.class);
     private static Map<String, Method> getMapper = new HashMap<>();
     private static Map<String, Method> postMapper = new HashMap<>();
 
@@ -22,7 +25,7 @@ public class MethodMapper {
             File[] controllers = file.listFiles();
             if (controllers != null) {
                 for (File controller : controllers) {
-                    // controller 내의 모든 컨트롤러의 메소드를 읽는다.
+                    // controller 내의 모든 컨트롤러의 메소드를 가져온다.
                     String className = controller.getName().replace(".java", "");
                     Class<?> cl = Class.forName("controller." +className);
 
@@ -35,7 +38,7 @@ public class MethodMapper {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("error in getting controller method: " + e.getMessage());
         }
     }
 
