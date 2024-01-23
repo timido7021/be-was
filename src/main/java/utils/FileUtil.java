@@ -6,20 +6,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.NoSuchElementException;
-import java.util.Set;
 import java.util.stream.Stream;
 
 public class FileUtil {
-    public static Set<String> extensions = Set.of(
-            ".html",
-            ".css",
-            ".js",
-            ".ttf",
-            ".woff",
-            ".png",
-            ".ico"
-    );
-
     private enum ContentType {
         HTML(".html", "text/html"),
         CSS(".css", "text/css"),
@@ -47,7 +36,7 @@ public class FileUtil {
     }
 
 
-    public static File getFileFromUrl(String url) throws IOException {
+    public static File getFileFromUrl(String url) {
         String contentType = getContentType(url);
 
         if (contentType.equals("text/html")) {

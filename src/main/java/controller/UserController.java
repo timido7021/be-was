@@ -5,8 +5,6 @@ import http.HttpRequest;
 import http.HttpResponse;
 import http.header.ResponseHeader;
 import model.User;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import http.status.HttpStatus;
 import service.UserService;
 
@@ -16,8 +14,6 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 public class UserController {
-    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
-
     public static UserController getInstance() {
         return LazyHolder.INSTANCE;
     }

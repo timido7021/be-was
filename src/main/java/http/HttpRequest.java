@@ -2,8 +2,6 @@ package http;
 
 import http.body.RequestBody;
 import http.header.RequestHeader;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -15,10 +13,7 @@ import java.util.stream.Collectors;
 public class HttpRequest {
     private final String url;
     private final String method;
-
-
     private Map<String, String> queryString;
-    private static final Logger logger = LoggerFactory.getLogger(HttpRequest.class);
     private RequestHeader requestHeader;
 
     private RequestBody requestBody;

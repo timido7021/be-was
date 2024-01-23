@@ -1,7 +1,6 @@
 package dispatcher;
 
 import controller.StaticResourceController;
-import controller.UserController;
 import http.HttpRequest;
 import http.HttpResponse;
 import http.header.ResponseHeader;
@@ -13,7 +12,6 @@ import java.lang.reflect.Method;
 import java.util.Map;
 
 public class RequestDispatcher {
-    private final UserController userController = UserController.getInstance();
     private final StaticResourceController staticResourceController = StaticResourceController.getInstance();
 
     public static RequestDispatcher getInstance() {
@@ -30,7 +28,7 @@ public class RequestDispatcher {
         String url = request.getUrl();
 
         Method method = MethodMapper.findMethodByRequest(request);
-        if (method != null) { // 요청에 적합한 메소드가 없을 때
+        if (method != null) { // 요청에 적합한 메소드가 있을 때
             MethodMapper.invokeMethod(method, request, response);
             return;
         }
