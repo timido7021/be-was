@@ -68,7 +68,7 @@ public class FileUtil {
         }
 
         try {
-            contentType = Stream.of( ContentType.values())
+            contentType = Stream.of(ContentType.values())
                     .filter(type -> type.getExtension().equals(urlExtension))
                     .findFirst().orElseThrow();
         } catch (NoSuchElementException e) {

@@ -32,7 +32,7 @@ public class RequestDispatcher {
             if (url.equals("/")) {
                 response.setEmptyBody();
                 response.setHeader(
-                        ResponseHeader.of(HttpStatus.SEE_OTHER, Map.of("Location", "/index.html"))
+                        ResponseHeader.of(HttpStatus.FOUND, Map.of("Location", "/index.html"))
                 );
             }
             if (FileUtil.extensions.stream()
@@ -43,14 +43,20 @@ public class RequestDispatcher {
         }
 
         if (method.equals("POST")) {
-            if (url.equals("/user/create"))
+            if (url.equals("/user/create")) {
                 userController.signup(request, response);
+                return;
+            }
+            response.setEmptyBody();
+            response.setHeader(
+                    ResponseHeader.of(HttpStatus.NOT_FOUND, Map.of())
+            );
             return;
         }
 
         response.setEmptyBody();
         response.setHeader(
-                ResponseHeader.of(HttpStatus.METHOD_NOT_ALLOWED, Map.of("Allow", "GET"))
+                ResponseHeader.of(HttpStatus.METHOD_NOT_ALLOWED, Map.of("Allow", "GET, POST"))
         );
     }
 }
