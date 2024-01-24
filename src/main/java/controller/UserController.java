@@ -1,6 +1,7 @@
 package controller;
 
 import annotations.PostMapping;
+import http.SessionManager;
 import http.HttpRequest;
 import http.HttpResponse;
 import http.header.ResponseHeader;
@@ -35,7 +36,7 @@ public class UserController {
         Map<String, String> headerProperties = new HashMap<>();
 
         if (Stream.of(userId, password, name, email)
-                .anyMatch(e->e.isBlank())
+                .anyMatch(e -> e.isBlank())
         ) {
             response.setHeader(
                     ResponseHeader.of(HttpStatus.BAD_REQUEST, headerProperties)
@@ -59,5 +60,30 @@ public class UserController {
                     ResponseHeader.of(HttpStatus.FOUND, headerProperties)
             );
         }
+    }
+
+    @PostMapping(route = "/user/login")
+    public void login(HttpRequest request, HttpResponse response) throws IOException {
+        Map<String, String> userProperties = request.getRequestBody().convertRawStringAsMap();
+        String userId = userProperties.getOrDefault("userId", "");
+        String password = userProperties.getOrDefault("password", "");
+
+        User user = userService.getUser(userId, password);
+
+        if (user == null) {
+            response.setEmptyBody();
+            response.setHeader(
+                    ResponseHeader.of(HttpStatus.FOUND, Map.of("Location", "/user/login_failed.html"))
+            );
+            return;
+        }
+
+        response.setEmptyBody();
+        response.setHeader(
+                ResponseHeader.of(HttpStatus.FOUND, Map.of(
+                        "Location", "/index.html",
+                        "Set-Cookie", "sid=" + SessionManager.createSession(user) + "; Path=/; Max-Age=600"
+                ))
+        );
     }
 }

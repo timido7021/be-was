@@ -83,6 +83,26 @@ public class HttpRequest {
         return requestBody;
     }
 
+    public Map<String, String> getCookie() throws IOException {
+        String cookie = requestHeader.getProperties().getOrDefault("Cookie", null);
+        if (cookie == null)
+            return Map.of();
+
+        Map<String, String> result = new HashMap<>();
+        String[] propertyString = cookie.split(";");
+
+        for (String property : propertyString) {
+            String[] property_split = property.split("=");
+
+            if (property_split.length != 2 || property_split[1].isBlank())
+                continue;
+            property_split[1] = URLDecoder.decode(property_split[1], "UTF-8");
+            result.put(property_split[0].trim(), property_split[1].trim());
+        }
+
+        return result;
+    }
+
     @Override
     public String toString() {
         String query = queryString.entrySet().stream()

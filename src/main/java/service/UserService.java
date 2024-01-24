@@ -36,6 +36,17 @@ public class UserService {
         }
     }
 
+    public User getUser(String userId, String password) {
+        if (Database.findUserById(userId) == null)
+            return null;
+
+        User user = Database.findUserById(userId);
+        if (user == null || !password.equals(user.getPassword()))
+            return null;
+
+        return user;
+    }
+
     public List<User> listAll() {
         return new ArrayList<>(Database.findAll());
     }

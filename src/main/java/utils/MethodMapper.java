@@ -59,6 +59,7 @@ public class MethodMapper {
             Object instance = cl.getDeclaredMethod("getInstance").invoke(null);
             method.invoke(instance, request, response);
         } catch (Exception e) {
+            logger.debug(e.getClass().toString() + " " + e.getMessage());
             response.setHeader(
                     ResponseHeader.of(HttpStatus.INTERNAL_SERVER_ERROR, Map.of())
             );
