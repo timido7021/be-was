@@ -58,6 +58,8 @@ public class MethodMapper {
         try {
             Class<?> cl = method.getDeclaringClass();
             Object instance = cl.getDeclaredMethod("getInstance").invoke(null);
+            // 메서드를 invoke할 인스턴스는 싱글톤 패턴으로 작성되었기 때문에
+            // 여러 번 메서드를 호출해도 단일한 컨트롤러 인스턴스에서 호출된다.
             method.invoke(instance, request, response);
         } catch (Exception e) {
             logger.debug(e.getClass().toString() + " " + e.getMessage());

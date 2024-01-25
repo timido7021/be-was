@@ -25,17 +25,19 @@ public class RequestDispatcher {
         String httpMethod = request.getMethod();
         String url = request.getUrl();
 
-        if (!Set.of("GET", "POST").contains(httpMethod)) {
+        if (!Set.of("GET", "POST").contains(httpMethod)) { // 적합하지 않은 HTTP method
             response.setStatusCode(HttpStatus.METHOD_NOT_ALLOWED);
             response.addHeaderProperty("Allow", "GET, POST");
         }
 
+        // MethodMapper가 GetMapping, PostMapping 어노테이션을 통해
+        // Map 형태로 httpMethod, url에 맞는 메소드를 가지고 있다.
         Method method = MethodMapper.findMethodByRequest(request);
         if (method != null) { // 요청에 적합한 메소드가 있을 때
             MethodMapper.invokeMethod(method, request, response);
             return;
         }
-        // 정적파일 및 리다이렉팅
+        // 해당하는 메소드가 없다면 정적파일 및 리다이렉팅 시도
         if (httpMethod.equals("GET")) {
             if (url.equals("/")) {
                 response.setStatusCode(HttpStatus.FOUND);
@@ -46,6 +48,7 @@ public class RequestDispatcher {
             return;
         }
 
+        // 요청을 처리할 수 없으므로 404 Not Found 응답
         response.setStatusCode(HttpStatus.NOT_FOUND);
     }
 }

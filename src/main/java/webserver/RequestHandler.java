@@ -13,6 +13,7 @@ public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
 
     private Socket connection;
+
     public RequestHandler(Socket connectionSocket) {
         this.connection = connectionSocket;
     }
@@ -30,6 +31,9 @@ public class RequestHandler implements Runnable {
             try {
                 HttpRequest httpRequest = HttpRequest.createFromReader(bufferedReader);
                 logger.debug(httpRequest.toString());
+                // RequestHandler는 InputStreamReader로 받은 요청을 HttpRequest 객체로 만들고
+                // dispatcher에게 이 요청을 전달해서 요청에 맞는 메서드나 정적 파일을 불러오게 한다.
+                // 이후 응답을 OutputStream를 통해 바이트 형태로 출력하는 역할까지 담당한다.
                 dispatcher.dispatch(httpRequest, httpResponse);
 
                 writeResponse(dos, httpResponse);

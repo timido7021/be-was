@@ -35,6 +35,7 @@ public class StaticResourceController {
 
         byte[] body = FileUtil.readFile(file);
 
+        // 마지막 파일이 변경된 시점을 lastModified()를 통해 알 수 있다.
         LocalDateTime nowDate = LocalDateTime.now();
         LocalDateTime lastModified = LocalDateTime.ofInstant(
                 Instant.ofEpochSecond(
@@ -50,18 +51,16 @@ public class StaticResourceController {
         response.addHeaderProperty("Date", DateTimeUtil.getGMTDateString(nowDate));
         response.addHeaderProperty("Last-Modified", DateTimeUtil.getGMTDateString(lastModified));
 
+        // 만약 이전의 요청으로 마지막으로 언제 수정됬는지 브라우저가 알면 요청헤더로 다음과 같은 값이 추가된다.
         String modifiedSince = request.getHeaderProperty("If-Modified-Since");
 
         if (!modifiedSince.isBlank()) {
-            try {
-                if (DateTimeUtil.parseGMTDateString(modifiedSince)
-                        .isEqual(lastModified)
-                ) {
-                    response.setStatusCode(HttpStatus.NOT_MODIFIED);
-                    return;
-                }
-            } catch (Exception e) {
-                logger.error(e.getMessage());
+            if (DateTimeUtil.parseGMTDateString(modifiedSince)
+                    .isEqual(lastModified)) {
+                // 수정한 날짜가 동일하다면 파일이 수정되지 않았다는 의미이므로
+                // Empty Body와 함께 304 Not Modified 로 응답함
+                response.setStatusCode(HttpStatus.NOT_MODIFIED);
+                return;
             }
         }
 
