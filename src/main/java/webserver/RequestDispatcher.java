@@ -1,10 +1,9 @@
-package dispatcher;
+package webserver;
 
 import controller.StaticResourceController;
-import http.HttpRequest;
-import http.HttpResponse;
-import http.status.HttpStatus;
-import utils.MethodMapper;
+import webserver.http.HttpRequest;
+import webserver.http.HttpResponse;
+import webserver.http.HttpStatus;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -22,7 +21,7 @@ public class RequestDispatcher {
     }
 
 
-    public void dispatchHandler(HttpRequest request, HttpResponse response) throws IOException {
+    public void dispatch(HttpRequest request, HttpResponse response) throws IOException {
         String httpMethod = request.getMethod();
         String url = request.getUrl();
 

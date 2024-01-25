@@ -3,12 +3,11 @@ package webserver;
 import java.io.*;
 import java.net.Socket;
 
-import dispatcher.RequestDispatcher;
-import http.HttpRequest;
-import http.HttpResponse;
+import webserver.http.HttpRequest;
+import webserver.http.HttpResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import http.status.HttpStatus;
+import webserver.http.HttpStatus;
 
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
@@ -31,7 +30,7 @@ public class RequestHandler implements Runnable {
             try {
                 HttpRequest httpRequest = HttpRequest.createFromReader(bufferedReader);
                 logger.debug(httpRequest.toString());
-                dispatcher.dispatchHandler(httpRequest, httpResponse);
+                dispatcher.dispatch(httpRequest, httpResponse);
 
                 writeResponse(dos, httpResponse);
             } catch (IOException e) {

@@ -1,9 +1,9 @@
 package controller;
 
 import db.Database;
-import http.HttpRequest;
-import http.HttpResponse;
-import http.status.HttpStatus;
+import webserver.http.HttpRequest;
+import webserver.http.HttpResponse;
+import webserver.http.HttpStatus;
 import model.User;
 import org.junit.jupiter.api.Test;
 

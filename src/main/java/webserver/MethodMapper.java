@@ -1,10 +1,10 @@
-package utils;
+package webserver;
 
 import annotations.GetMapping;
 import annotations.PostMapping;
-import http.HttpRequest;
-import http.HttpResponse;
-import http.status.HttpStatus;
+import webserver.http.HttpRequest;
+import webserver.http.HttpResponse;
+import webserver.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,8 +25,10 @@ public class MethodMapper {
             if (controllers != null) {
                 for (File controller : controllers) {
                     // controller 내의 모든 컨트롤러의 메소드를 가져온다.
+                    if (controller.isDirectory())
+                        continue;
                     String className = controller.getName().replace(".java", "");
-                    Class<?> cl = Class.forName("controller." +className);
+                    Class<?> cl = Class.forName("controller." + className);
 
                     for (Method method : cl.getDeclaredMethods()) {
                         if (method.isAnnotationPresent(GetMapping.class))

@@ -1,11 +1,11 @@
 package controller;
 
 import annotations.PostMapping;
-import http.SessionManager;
-import http.HttpRequest;
-import http.HttpResponse;
+import webserver.http.SessionManager;
+import webserver.http.HttpRequest;
+import webserver.http.HttpResponse;
 import model.User;
-import http.status.HttpStatus;
+import webserver.http.HttpStatus;
 import service.UserService;
 
 import java.io.IOException;

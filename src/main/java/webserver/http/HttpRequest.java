@@ -1,7 +1,4 @@
-package http;
-
-import http.body.RequestBody;
-import http.header.RequestHeader;
+package webserver.http;
 
 import java.io.BufferedReader;
 import java.io.IOException;

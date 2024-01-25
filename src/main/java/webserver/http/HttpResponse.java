@@ -1,7 +1,4 @@
-package http;
-
-import http.header.ResponseHeader;
-import http.status.HttpStatus;
+package webserver.http;
 
 public class HttpResponse {
     private ResponseHeader header;

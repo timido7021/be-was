@@ -1,12 +1,12 @@
 package controller;
 
-import http.HttpRequest;
-import http.HttpResponse;
+import webserver.http.HttpRequest;
+import webserver.http.HttpResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import utils.DateTimeUtil;
-import utils.FileUtil;
-import http.status.HttpStatus;
+import controller.util.DateTimeUtil;
+import controller.util.FileUtil;
+import webserver.http.HttpStatus;
 
 import java.io.*;
 import java.time.Instant;

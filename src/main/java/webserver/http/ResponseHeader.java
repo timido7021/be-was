@@ -1,6 +1,4 @@
-package http.header;
-
-import http.status.HttpStatus;
+package webserver.http;
 
 import java.util.HashMap;
 import java.util.Map;
