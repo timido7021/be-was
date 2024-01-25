@@ -28,11 +28,11 @@ class UserControllerTest {
 
         userController.signup(request, response);
 
-        assertThat(response.getHeader().getStatus())
+        assertThat(response.getStatusCode())
                 .isEqualTo(HttpStatus.FOUND);
 
-        assertThat(response.getHeader().getProperty("Location"))
-                .isEqualTo("/user/login.html");
+        assertThat(response.getHeaderProperty("Location"))
+                .isEqualTo("/index.html");
 
         User user = Database.findUserById("asdf");
         assertThat(user).isNotNull();

@@ -3,13 +3,11 @@ package dispatcher;
 import controller.StaticResourceController;
 import http.HttpRequest;
 import http.HttpResponse;
-import http.header.ResponseHeader;
 import http.status.HttpStatus;
 import utils.MethodMapper;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
-import java.util.Map;
 
 public class RequestDispatcher {
     private final StaticResourceController staticResourceController = StaticResourceController.getInstance();
@@ -35,19 +33,15 @@ public class RequestDispatcher {
         // 정적파일 및 리다이렉팅
         if (httpMethod.equals("GET")) {
             if (url.equals("/")) {
-                response.setEmptyBody();
-                response.setHeader(
-                        ResponseHeader.of(HttpStatus.FOUND, Map.of("Location", "/index.html"))
-                );
+                response.setStatusCode(HttpStatus.FOUND);
+                response.addHeaderProperty("Location", "/index.html");
                 return;
             }
             staticResourceController.handle(request, response);
             return;
         }
 
-        response.setEmptyBody();
-        response.setHeader(
-                ResponseHeader.of(HttpStatus.METHOD_NOT_ALLOWED, Map.of("Allow", "GET, POST"))
-        );
+        response.setStatusCode(HttpStatus.METHOD_NOT_ALLOWED);
+        response.addHeaderProperty("Allow", "GET, POST");
     }
 }

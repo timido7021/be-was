@@ -2,7 +2,6 @@ package webserver;
 
 import java.io.*;
 import java.net.Socket;
-import java.util.HashMap;
 
 import dispatcher.RequestDispatcher;
 import http.HttpRequest;
@@ -27,16 +26,17 @@ public class RequestHandler implements Runnable {
             DataOutputStream dos = new DataOutputStream(out);
 
             RequestDispatcher dispatcher = RequestDispatcher.getInstance();
+            HttpResponse httpResponse = HttpResponse.of();
 
             try {
                 HttpRequest httpRequest = HttpRequest.createFromReader(bufferedReader);
                 logger.debug(httpRequest.toString());
-                HttpResponse httpResponse = HttpResponse.of();
                 dispatcher.dispatchHandler(httpRequest, httpResponse);
 
                 writeResponse(dos, httpResponse);
-            } catch (Exception e) {
-                writeResponse(dos, HttpResponse.of(HttpStatus.INTERNAL_SERVER_ERROR, "".getBytes(), new HashMap<>()));
+            } catch (IOException e) {
+                httpResponse.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR);
+                writeResponse(dos, httpResponse);
                 logger.error("Server request: " + e.getMessage());
             }
         } catch (IOException e) {
@@ -45,7 +45,7 @@ public class RequestHandler implements Runnable {
     }
 
     private void writeResponse(DataOutputStream dos, HttpResponse response) throws IOException {
-        dos.writeBytes(response.getHeader().toString());
+        dos.writeBytes(response.getHeaderAsString());
         dos.write(response.getBody(), 0, response.getBody().length);
         dos.flush();
     }

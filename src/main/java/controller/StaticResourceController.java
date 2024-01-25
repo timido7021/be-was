@@ -2,7 +2,6 @@ package controller;
 
 import http.HttpRequest;
 import http.HttpResponse;
-import http.header.ResponseHeader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import utils.DateTimeUtil;
@@ -13,7 +12,6 @@ import java.io.*;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.*;
 
 public class StaticResourceController {
     private static final Logger logger = LoggerFactory.getLogger(StaticResourceController.class);
@@ -29,14 +27,9 @@ public class StaticResourceController {
     public void handle(HttpRequest request, HttpResponse response) throws IOException {
         File file = FileUtil.getFileFromUrl(request.getUrl());
         String contentType = FileUtil.getContentType(request.getUrl());
-        Map<String, String> properties = new HashMap<>();
 
         if (!file.exists()) {
-            response.setHeader(
-                    ResponseHeader.of(HttpStatus.NOT_FOUND, properties)
-            );
-            response.setEmptyBody();
-
+            response.setStatusCode(HttpStatus.NOT_FOUND);
             return;
         }
 
@@ -51,25 +44,20 @@ public class StaticResourceController {
                 ZoneId.systemDefault()
         );
 
-        properties.put("Content-Type", contentType);
-        properties.put("Cache-Control", "public, max-age=30");
-        properties.put("Content-Length", String.valueOf(body.length));
-        properties.put("Date", DateTimeUtil.getGMTDateString(nowDate));
-        properties.put("Last-Modified", DateTimeUtil.getGMTDateString(lastModified));
+        response.addHeaderProperty("Content-Type", contentType);
+        response.addHeaderProperty("Cache-Control", "public, max-age=30");
+        response.addHeaderProperty("Content-Length", String.valueOf(body.length));
+        response.addHeaderProperty("Date", DateTimeUtil.getGMTDateString(nowDate));
+        response.addHeaderProperty("Last-Modified", DateTimeUtil.getGMTDateString(lastModified));
 
-        String modifiedSince = request.getRequestHeader()
-                .getProperties()
-                .getOrDefault("If-Modified-Since", "");
+        String modifiedSince = request.getHeaderProperty("If-Modified-Since");
 
         if (!modifiedSince.isBlank()) {
             try {
                 if (DateTimeUtil.parseGMTDateString(modifiedSince)
                         .isEqual(lastModified)
                 ) {
-                    response.setHeader(
-                            ResponseHeader.of(HttpStatus.NOT_MODIFIED, properties)
-                    );
-                    response.setEmptyBody();
+                    response.setStatusCode(HttpStatus.NOT_MODIFIED);
                     return;
                 }
             } catch (Exception e) {
@@ -77,7 +65,7 @@ public class StaticResourceController {
             }
         }
 
-        response.setHeader(ResponseHeader.of(HttpStatus.OK, properties));
+        response.setStatusCode(HttpStatus.OK);
         response.setBody(body);
     }
 }

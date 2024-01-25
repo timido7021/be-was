@@ -1,6 +1,5 @@
 package service;
 
-import controller.UserController;
 import db.Database;
 import model.User;
 import org.slf4j.Logger;
@@ -8,7 +7,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class UserService {
     public static UserService getInstance() {

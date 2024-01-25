@@ -5,15 +5,11 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class RequestHeader extends Header {
+public class RequestHeader {
     private Map<String, String> properties;
 
     private RequestHeader(Map<String, String> properties) {
         this.properties = properties;
-    }
-
-    public Map<String, String> getProperties() {
-        return properties;
     }
 
     public static RequestHeader createFromReader(BufferedReader reader) throws IOException {
@@ -37,17 +33,21 @@ public class RequestHeader extends Header {
         return new RequestHeader(properties);
     }
 
+    public String getHeaderProperty(String key) {
+        return properties.getOrDefault(key, "");
+    }
+
     @Override
     public String toString() {
-        Set<String> requiredHeaders = new HashSet<>();
-
-        requiredHeaders.add("Host");
-        requiredHeaders.add("Connection");
-        requiredHeaders.add("Referer");
-        requiredHeaders.add("User-Agent");
-        requiredHeaders.add("Accept");
-        requiredHeaders.add("Accept-Language");
-        requiredHeaders.add("Accept-Encoding");
+        Set<String> requiredHeaders = Set.of(
+                "Host",
+                "Connection",
+                "Referer",
+                "User-Agent",
+                "Accept",
+                "Accept-Language",
+                "Accept-Encoding"
+        );
 
         return properties.entrySet().stream().map(e -> {
                     if (requiredHeaders.contains(e.getKey()))

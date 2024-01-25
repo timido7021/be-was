@@ -4,7 +4,6 @@ import annotations.GetMapping;
 import annotations.PostMapping;
 import http.HttpRequest;
 import http.HttpResponse;
-import http.header.ResponseHeader;
 import http.status.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,10 +59,7 @@ public class MethodMapper {
             method.invoke(instance, request, response);
         } catch (Exception e) {
             logger.debug(e.getClass().toString() + " " + e.getMessage());
-            response.setHeader(
-                    ResponseHeader.of(HttpStatus.INTERNAL_SERVER_ERROR, Map.of())
-            );
-            response.setEmptyBody();
+            response.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

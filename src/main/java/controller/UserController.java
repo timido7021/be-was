@@ -4,13 +4,11 @@ import annotations.PostMapping;
 import http.SessionManager;
 import http.HttpRequest;
 import http.HttpResponse;
-import http.header.ResponseHeader;
 import model.User;
 import http.status.HttpStatus;
 import service.UserService;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
 
@@ -27,63 +25,48 @@ public class UserController {
 
     @PostMapping(route = "/user/create")
     public void signup(HttpRequest request, HttpResponse response) throws IOException {
-        Map<String, String> userProperties = request.getRequestBody().convertRawStringAsMap();
+        Map<String, String> userProperties = request.getBody().convertRawStringAsMap();
         String userId = userProperties.getOrDefault("userId", "");
         String password = userProperties.getOrDefault("password", "");
         String name = userProperties.getOrDefault("name", "");
         String email = userProperties.getOrDefault("email", "");
 
-        Map<String, String> headerProperties = new HashMap<>();
-
         if (Stream.of(userId, password, name, email)
-                .anyMatch(e -> e.isBlank())
+                .anyMatch(property -> property.isBlank())
         ) {
-            response.setHeader(
-                    ResponseHeader.of(HttpStatus.BAD_REQUEST, headerProperties)
-            );
-
+            response.setStatusCode(HttpStatus.BAD_REQUEST);
             return;
         }
 
         boolean isSaved = userService.saveUser(new User(userId, password, name, email));
 
         if (isSaved) {
-            headerProperties.put("Location", "/user/login.html");
-
-            response.setHeader(
-                    ResponseHeader.of(HttpStatus.FOUND, headerProperties)
-            );
+            response.setStatusCode(HttpStatus.FOUND);
+            response.addHeaderProperty("Location", "/index.html");
         } else {
-            headerProperties.put("Location", "/user/form_failed.html");
-
-            response.setHeader(
-                    ResponseHeader.of(HttpStatus.FOUND, headerProperties)
-            );
+            response.setStatusCode(HttpStatus.FOUND);
+            response.addHeaderProperty("Location", "/user/form_failed.html");
         }
     }
 
     @PostMapping(route = "/user/login")
     public void login(HttpRequest request, HttpResponse response) throws IOException {
-        Map<String, String> userProperties = request.getRequestBody().convertRawStringAsMap();
+        Map<String, String> userProperties = request.getBody().convertRawStringAsMap();
         String userId = userProperties.getOrDefault("userId", "");
         String password = userProperties.getOrDefault("password", "");
 
         User user = userService.getUser(userId, password);
 
         if (user == null) {
-            response.setEmptyBody();
-            response.setHeader(
-                    ResponseHeader.of(HttpStatus.FOUND, Map.of("Location", "/user/login_failed.html"))
-            );
+            response.setStatusCode(HttpStatus.FOUND);
+            response.addHeaderProperty("Location", "/user/login_failed.html");
             return;
         }
 
-        response.setEmptyBody();
-        response.setHeader(
-                ResponseHeader.of(HttpStatus.FOUND, Map.of(
-                        "Location", "/index.html",
-                        "Set-Cookie", "sid=" + SessionManager.createSession(user) + "; Path=/; Max-Age=600"
-                ))
-        );
+        String sid = SessionManager.createSession(user);
+
+        response.setStatusCode(HttpStatus.FOUND);
+        response.addHeaderProperty("Location", "/index.html");
+        response.addHeaderProperty("Set-Cookie", "sid=" + sid + "; Path=/; Max-Age=300");
     }
 }
