@@ -49,12 +49,9 @@ public class RequestHeader {
                 "Accept-Encoding"
         );
 
-        return properties.entrySet().stream().map(e -> {
-                    if (requiredHeaders.contains(e.getKey()))
-                        return e.getKey() + ": " + e.getValue();
-                    else return "";
-                })
-                .filter(e -> !e.isEmpty())
+        return properties.entrySet().stream()
+                .filter(entry -> requiredHeaders.contains(entry.getKey()))
+                .map(entry -> entry.getKey() + ": " + entry.getValue())
                 .collect(Collectors.joining(" | "));
     }
 }
