@@ -34,7 +34,8 @@ public class UserController {
         if (Stream.of(userId, password, name, email)
                 .anyMatch(property -> property.isBlank())
         ) {
-            response.setStatusCode(HttpStatus.BAD_REQUEST);
+            response.setStatusCode(HttpStatus.FOUND);
+            response.addHeaderProperty("Location", "/user/form_failed.html");
             return;
         }
 

@@ -8,6 +8,7 @@ import utils.MethodMapper;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.util.Set;
 
 public class RequestDispatcher {
     private final StaticResourceController staticResourceController = StaticResourceController.getInstance();
@@ -25,6 +26,11 @@ public class RequestDispatcher {
         String httpMethod = request.getMethod();
         String url = request.getUrl();
 
+        if (!Set.of("GET", "POST").contains(httpMethod)) {
+            response.setStatusCode(HttpStatus.METHOD_NOT_ALLOWED);
+            response.addHeaderProperty("Allow", "GET, POST");
+        }
+
         Method method = MethodMapper.findMethodByRequest(request);
         if (method != null) { // 요청에 적합한 메소드가 있을 때
             MethodMapper.invokeMethod(method, request, response);
@@ -41,7 +47,6 @@ public class RequestDispatcher {
             return;
         }
 
-        response.setStatusCode(HttpStatus.METHOD_NOT_ALLOWED);
-        response.addHeaderProperty("Allow", "GET, POST");
+        response.setStatusCode(HttpStatus.NOT_FOUND);
     }
 }
