@@ -39,7 +39,7 @@ public class UserController {
             return;
         }
 
-        boolean isSaved = userService.saveUser(new User(userId, password, name, email));
+        boolean isSaved = userService.saveUser(userId, password, name, email);
 
         if (isSaved) {
             response.setStatusCode(HttpStatus.FOUND);

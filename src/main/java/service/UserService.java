@@ -19,14 +19,15 @@ public class UserService {
 
     private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 
-    public boolean saveUser(User user) {
-        if (Database.findUserById(user.getUserId()) != null) {
+    public boolean saveUser(String userId, String password, String name, String email) {
+        if (Database.findUserById(userId) != null) {
             return false;
         }
 
         try {
-            Database.addUser(user);
-            logger.debug("user saved: {}", user);
+            User newUser = new User(userId, password, name, email);
+            Database.addUser(newUser);
+            logger.debug("user saved: {}", newUser);
             logger.debug("DB Users: {}", Database.findAll());
             return true;
         } catch (Exception e) {
