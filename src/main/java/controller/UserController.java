@@ -76,6 +76,16 @@ public class UserController {
         response.addHeaderProperty("Set-Cookie", "sid=" + sid + "; Path=/; Max-Age=1800");
     }
 
+    @PostMapping(route = "/user/logout")
+    @AuthRequired
+    public void logout(HttpRequest request, HttpResponse response) {
+        SessionManager.deleteSessionByRequest(request);
+
+        response.setStatusCode(HttpStatus.FOUND);
+        response.addHeaderProperty("Location", "/index.html");
+        response.addHeaderProperty("Set-Cookie", "sid=0; Path=/; Max-Age=0");
+    }
+
     @GetMapping(route = "/user/list")
     @AuthRequired
     public void list(HttpRequest request, HttpResponse response) throws IOException {

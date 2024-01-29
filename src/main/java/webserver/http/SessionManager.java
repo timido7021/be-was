@@ -49,6 +49,15 @@ public class SessionManager {
         return randomKey;
     }
 
+    public static void deleteSessionByRequest(HttpRequest request) {
+        try {
+            String sid = request.getCookie().getOrDefault("sid", "");
+            sessionMap.remove(sid);
+        } catch (IOException e) {
+            return;
+        }
+    }
+
     private static User findUserBySessionKey(String key) {
         Session session = sessionMap.getOrDefault(key, null);
         if (session == null)

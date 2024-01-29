@@ -104,11 +104,14 @@ public class FileUtil {
         if (request.getUrl().contains("/qna/") || request.getUrl().contains("/user/"))
             relativePath = "../";
 
+        String logoutBtnStyle = "border: black 0px solid; background: transparent; padding: 15px; line-height: 20px; color:#777;";
+
         htmlBuilder.append(beforeMenuBar);
         if (user != null) {
             htmlBuilder.append("<li><a href=\"#\">").append(user.getName()).append("</a></li>")
                     .append("<li><a href=\"").append(relativePath).append("index.html\" role=\"button\">Posts</a></li>\n")
-                    .append("<li><a href=\"#\" role=\"button\">로그아웃</a></li>\n")
+                    .append("<li><form method=\"POST\" action=\"/user/logout\"><button style=\"").append(logoutBtnStyle)
+                    .append("\">로그아웃</button></form></li>\n")
                     .append("<li><a href=\"#\" role=\"button\">개인정보수정</a></li>");
         } else {
             htmlBuilder.append("<li><a href=\"../index.html\">Posts</a></li>\n")
