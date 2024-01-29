@@ -4,6 +4,7 @@ import annotations.AuthRequired;
 import annotations.GetMapping;
 import annotations.PostMapping;
 import controller.util.FileUtil;
+import model.Qna;
 import model.User;
 import service.QnaService;
 import webserver.http.HttpRequest;
@@ -34,7 +35,7 @@ public class QnaController {
 
         String template = new String(qnaTemplate);
         String beforeQnaAuthor = template.substring(0, template.indexOf("{{value}}"));
-        String afterQnaAuthor = template.substring(template.indexOf("{{value}}")+"{{value}}".length());
+        String afterQnaAuthor = template.substring(template.indexOf("{{value}}") + "{{value}}".length());
         htmlBuilder.append(beforeQnaAuthor).append(user.getName());
         htmlBuilder.append(afterQnaAuthor);
 
@@ -64,5 +65,47 @@ public class QnaController {
             response.setStatusCode(HttpStatus.FOUND);
             response.addHeaderProperty("Location", "/qna/write.html");
         }
+    }
+
+    @GetMapping(route = "/qna/show")
+    @AuthRequired
+    public void showQna(HttpRequest request, HttpResponse response) throws IOException {
+        String qnaIdString = request.getQueryString().get("qnaId");
+        if (qnaIdString == null) {
+            response.setStatusCode(HttpStatus.FOUND);
+            response.addHeaderProperty("Location", "/index.html");
+            return;
+        }
+
+        long qnaId;
+        try {
+            qnaId = Long.parseLong(qnaIdString);
+        } catch (NumberFormatException e) {
+            response.setStatusCode(HttpStatus.FOUND);
+            response.addHeaderProperty("Location", "/index.html");
+            return;
+        }
+
+        QnaService qnaService = QnaService.getInstance();
+
+        byte[] qnaShowTemplate = FileUtil.readFile(new File("src/main/resources/templates/qna/show.html"));
+        String template = new String(qnaShowTemplate);
+
+        Qna qna = qnaService.getQna(qnaId);
+        if (qna == null) {
+            response.setStatusCode(HttpStatus.FOUND);
+            response.addHeaderProperty("Location", "/index.html");
+            return;
+        }
+
+        template = template.replace("{{qna_author}}", qna.getAuthor());
+        template = template.replace("{{qna_title}}", qna.getTitle());
+        template = template.replace("{{qna_content}}", qna.getContent());
+        template = template.replace("{{qna_createdAt}}", qna.getCreatedAtAsString());
+
+        response.addHeaderProperty("Content-Type", "text/html");
+        response.setStatusCode(HttpStatus.OK);
+        response.setBody(template.getBytes());
+        FileUtil.generateDynamicMenuBar(request, response);
     }
 }

@@ -49,13 +49,12 @@ public class StaticResourceController {
         } else {
 
             for (Qna qna : qnaList) {
-                String createdAt = qna.getCreatedAt().format(
-                        DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
-                );
+                String createdAt = qna.getCreatedAtAsString();
                 htmlBuilder.append("<li><div class=\"wrap\">\n")
                         .append("<div class=\"main\">\n")
                         .append("<strong class=\"subject\">\n")
-                        .append("<a href=\"./qna/show.html\">").append(qna.getTitle()).append("</a>\n")
+                        .append("<a href=\"./qna/show?qnaId=").append(qna.getQnaId()).append("\">")
+                        .append(qna.getTitle()).append("</a>\n")
                         .append("</strong>\n")
                         .append("<div class=\"auth-info\">\n")
                         .append("<i class=\"icon-add-comment\"></i>\n")

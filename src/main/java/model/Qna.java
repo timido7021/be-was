@@ -1,6 +1,7 @@
 package model;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class Qna {
     Long qnaId;
@@ -33,8 +34,10 @@ public class Qna {
         return content;
     }
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
+    public String getCreatedAtAsString() {
+        return createdAt.format(
+                DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+        );
     }
 
     @Override
