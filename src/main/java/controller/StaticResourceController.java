@@ -83,6 +83,7 @@ public class StaticResourceController {
         if (!file.exists()) {
             response.setStatusCode(HttpStatus.NOT_FOUND);
             response.set404Body();
+            FileUtil.generateDynamicMenuBar(request, response);
             return;
         }
 

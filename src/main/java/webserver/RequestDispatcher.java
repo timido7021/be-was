@@ -1,6 +1,7 @@
 package webserver;
 
 import controller.StaticResourceController;
+import controller.util.FileUtil;
 import webserver.http.HttpRequest;
 import webserver.http.HttpResponse;
 import webserver.http.HttpStatus;
@@ -29,6 +30,7 @@ public class RequestDispatcher {
             response.setStatusCode(HttpStatus.METHOD_NOT_ALLOWED);
             response.addHeaderProperty("Allow", "GET, POST");
             response.set404Body();
+            FileUtil.generateDynamicMenuBar(request, response);
             return;
         }
 
@@ -53,5 +55,6 @@ public class RequestDispatcher {
         // 요청을 처리할 수 없으므로 404 Not Found 응답
         response.setStatusCode(HttpStatus.NOT_FOUND);
         response.set404Body();
+        FileUtil.generateDynamicMenuBar(request, response);
     }
 }
