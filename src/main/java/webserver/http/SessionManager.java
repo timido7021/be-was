@@ -37,9 +37,9 @@ public class SessionManager {
         LocalDateTime createdAt = LocalDateTime.now();
         sessionMap.put(randomKey, new Session(createdAt, user));
 
-        // 현재 시간이랑 비교하여 5분을 초과한 만료된 세션 제거
+        // 현재 시간이랑 비교하여 30분을 초과한 만료된 세션 제거
         List<String> expired = sessionMap.entrySet().stream()
-                .filter(entry -> entry.getValue().getCreatedAt().plusMinutes(5).isBefore(createdAt))
+                .filter(entry -> entry.getValue().getCreatedAt().plusMinutes(30).isBefore(createdAt))
                 .map(entry -> entry.getKey()).collect(Collectors.toList());
 
         expired.forEach(
@@ -56,7 +56,7 @@ public class SessionManager {
 
         LocalDateTime now = LocalDateTime.now();
 
-        if (session.getCreatedAt().plusMinutes(5).isAfter(now))
+        if (session.getCreatedAt().plusMinutes(30).isAfter(now))
             return session.getUser();
 
         return null;

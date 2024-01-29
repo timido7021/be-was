@@ -69,10 +69,10 @@ public class UserController {
 
         String sid = SessionManager.createSession(user);
 
-        // 5분간 유지되는 세션을 생성하고 쿠키도 5분 후에 만료되도록 한다.
+        // 30분간 유지되는 세션을 생성하고 쿠키도 30분 후에 만료되도록 한다.
         response.setStatusCode(HttpStatus.FOUND);
         response.addHeaderProperty("Location", "/index.html");
-        response.addHeaderProperty("Set-Cookie", "sid=" + sid + "; Path=/; Max-Age=300");
+        response.addHeaderProperty("Set-Cookie", "sid=" + sid + "; Path=/; Max-Age=1800");
     }
 
     @GetMapping(route = "/user/list")
