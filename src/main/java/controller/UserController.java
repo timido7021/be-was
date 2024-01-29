@@ -1,5 +1,6 @@
 package controller;
 
+import annotations.AuthRequired;
 import annotations.GetMapping;
 import annotations.PostMapping;
 import controller.util.FileUtil;
@@ -76,15 +77,8 @@ public class UserController {
     }
 
     @GetMapping(route = "/user/list")
+    @AuthRequired
     public void list(HttpRequest request, HttpResponse response) throws IOException {
-        User sessionUser = SessionManager.findUserByRequest(request);
-
-        if (sessionUser == null) {
-            response.setStatusCode(HttpStatus.FOUND);
-            response.addHeaderProperty("Location", "/user/login.html");
-            return;
-        }
-
         StringBuilder htmlBuilder = new StringBuilder();
 
         byte[] listTemplate = FileUtil.readFile(new File("src/main/resources/templates/user/list.html"));
