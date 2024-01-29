@@ -28,7 +28,7 @@ public class UserService {
             User newUser = new User(userId, password, name, email);
             Database.addUser(newUser);
             logger.debug("user saved: {}", newUser);
-            logger.debug("DB Users: {}", Database.findAll());
+            logger.debug("DB Users: {}", Database.findAllUsers());
             return true;
         } catch (Exception e) {
             return false;
@@ -36,9 +36,6 @@ public class UserService {
     }
 
     public User getUser(String userId, String password) {
-        if (Database.findUserById(userId) == null)
-            return null;
-
         User user = Database.findUserById(userId);
         if (user == null || !password.equals(user.getPassword()))
             return null;
@@ -47,6 +44,6 @@ public class UserService {
     }
 
     public List<User> listAll() {
-        return new ArrayList<>(Database.findAll());
+        return new ArrayList<>(Database.findAllUsers());
     }
 }
