@@ -1,15 +1,24 @@
 package model;
 
+import java.time.LocalDateTime;
+
 public class Qna {
+    Long qnaId;
     String author;
     String title;
-
     String content;
+    LocalDateTime createdAt;
 
-    public Qna(String author, String title, String content) {
+    public Qna(Long qnaId, String author, String title, String content, LocalDateTime createdAt) {
+        this.qnaId = qnaId;
         this.author = author;
         this.title = title;
         this.content = content;
+        this.createdAt = createdAt;
+    }
+
+    public Long getQnaId() {
+        return qnaId;
     }
 
     public String getAuthor() {
@@ -24,12 +33,16 @@ public class Qna {
         return content;
     }
 
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
     @Override
     public String toString() {
-        return "Qna[" +
+        return "Qna{" +
                 "author='" + author + '\'' +
                 ", title='" + title + '\'' +
-                ", content=\"" + content + '\"' +
-                ']';
+                ", createdAt=" + createdAt +
+                '}';
     }
 }

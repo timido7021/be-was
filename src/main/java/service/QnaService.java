@@ -5,8 +5,10 @@ import model.Qna;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class QnaService {
     public static QnaService getInstance() {
@@ -19,9 +21,11 @@ public class QnaService {
 
     private static final Logger logger = LoggerFactory.getLogger(QnaService.class);
 
+    private static AtomicLong qnaCounter = new AtomicLong(0);
+
     public boolean saveQna(String author, String title, String content) {
         try {
-            Qna newQna = new Qna(author, title, content);
+            Qna newQna = new Qna(qnaCounter.addAndGet(1), author, title, content, LocalDateTime.now());
             Database.addQna(newQna);
             logger.debug("Qna saved: {}", newQna);
             logger.debug("DB Qna-s: {}", Database.findAllQna());

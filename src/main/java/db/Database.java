@@ -12,14 +12,12 @@ public class Database {
     private static Map<String, User> users = new ConcurrentHashMap<>();
     private static Map<Long, Qna> qnaMap = new ConcurrentHashMap<>();
 
-    private static AtomicLong qnaCounter = new AtomicLong(0);
-
     public static void addUser(User user) {
         users.put(user.getUserId(), user);
     }
 
     public static void addQna(Qna qna) {
-        qnaMap.put(qnaCounter.addAndGet(1), qna);
+        qnaMap.put(qna.getQnaId(), qna);
     }
 
     public static User findUserById(String userId) {

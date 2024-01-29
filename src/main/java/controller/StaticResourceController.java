@@ -15,6 +15,7 @@ import java.io.*;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class StaticResourceController {
@@ -46,7 +47,11 @@ public class StaticResourceController {
         if (qnaList.isEmpty()) {
             htmlBuilder.append("<li>현재 게시글이 없습니다.</li>");
         } else {
+
             for (Qna qna : qnaList) {
+                String createdAt = qna.getCreatedAt().format(
+                        DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+                );
                 htmlBuilder.append("<li><div class=\"wrap\">\n")
                         .append("<div class=\"main\">\n")
                         .append("<strong class=\"subject\">\n")
@@ -54,13 +59,12 @@ public class StaticResourceController {
                         .append("</strong>\n")
                         .append("<div class=\"auth-info\">\n")
                         .append("<i class=\"icon-add-comment\"></i>\n")
-                        // TODO Qna에 createdAt 필드 추가
-                        .append("<span class=\"time\">2016-01-05 18:47</span>\n")
+                        .append("<span class=\"time\">").append(createdAt).append("</span>\n")
                         .append("<a href=\"./user/profile.html\" class=\"author\">").append(qna.getAuthor()).append("</a>\n")
                         .append("</div>\n")
                         .append("<div class=\"reply\" title=\"댓글\">\n")
                         .append("<i class=\"icon-reply\"></i>\n")
-                        .append("<span class=\"point\">").append("</span>\n")
+                        .append("<span class=\"point\">").append(qna.getQnaId()).append("</span>\n")
                         .append("</div>\n").append("</div>\n").append("</div></li>");
             }
         }
