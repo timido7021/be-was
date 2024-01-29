@@ -1,5 +1,8 @@
 package controller;
 
+import annotations.GetMapping;
+import model.Qna;
+import service.QnaService;
 import webserver.http.HttpRequest;
 import webserver.http.HttpResponse;
 import org.slf4j.Logger;
@@ -12,6 +15,7 @@ import java.io.*;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.List;
 
 public class StaticResourceController {
     private static final Logger logger = LoggerFactory.getLogger(StaticResourceController.class);
@@ -22,6 +26,51 @@ public class StaticResourceController {
 
     private static class LazyHolder {
         private static final StaticResourceController INSTANCE = new StaticResourceController();
+    }
+
+    @GetMapping(route = "/index.html")
+    public void index(HttpRequest request, HttpResponse response) throws IOException {
+        StringBuilder htmlBuilder = new StringBuilder();
+        byte[] indexTemplate = FileUtil.readFile(new File("src/main/resources/templates/index.html"));
+
+        String template = new String(indexTemplate);
+
+        String beforeQnaList = template.substring(0, template.indexOf("{{qna_list}}"));
+        String afterQnaList = template.substring(template.indexOf("{{qna_list}}") + "{{qna_list}}".length());
+
+        QnaService qnaService = QnaService.getInstance();
+        List<Qna> qnaList = qnaService.listAll();
+
+        htmlBuilder.append(beforeQnaList);
+
+        if (qnaList.isEmpty()) {
+            htmlBuilder.append("<li>현재 게시글이 없습니다.</li>");
+        } else {
+            for (Qna qna : qnaList) {
+                htmlBuilder.append("<li><div class=\"wrap\">\n")
+                        .append("<div class=\"main\">\n")
+                        .append("<strong class=\"subject\">\n")
+                        .append("<a href=\"./qna/show.html\">").append(qna.getTitle()).append("</a>\n")
+                        .append("</strong>\n")
+                        .append("<div class=\"auth-info\">\n")
+                        .append("<i class=\"icon-add-comment\"></i>\n")
+                        // TODO Qna에 createdAt 필드 추가
+                        .append("<span class=\"time\">2016-01-05 18:47</span>\n")
+                        .append("<a href=\"./user/profile.html\" class=\"author\">").append(qna.getAuthor()).append("</a>\n")
+                        .append("</div>\n")
+                        .append("<div class=\"reply\" title=\"댓글\">\n")
+                        .append("<i class=\"icon-reply\"></i>\n")
+                        .append("<span class=\"point\">").append("</span>\n")
+                        .append("</div>\n").append("</div>\n").append("</div></li>");
+            }
+        }
+
+        htmlBuilder.append(afterQnaList);
+
+        response.addHeaderProperty("Content-Type", "text/html");
+        response.setBody(htmlBuilder.toString().getBytes());
+
+        FileUtil.generateDynamicMenuBar(request, response);
     }
 
     public void handle(HttpRequest request, HttpResponse response) throws IOException {
