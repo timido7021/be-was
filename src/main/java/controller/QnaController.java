@@ -30,9 +30,9 @@ public class QnaController {
         User user = SessionManager.findUserByRequest(request);
         StringBuilder htmlBuilder = new StringBuilder();
 
-        byte[] listTemplate = FileUtil.readFile(new File("src/main/resources/templates/qna/write.html"));
+        byte[] qnaTemplate = FileUtil.readFile(new File("src/main/resources/templates/qna/write.html"));
 
-        String template = new String(listTemplate);
+        String template = new String(qnaTemplate);
         String beforeQnaAuthor = template.substring(0, template.indexOf("{{value}}"));
         String afterQnaAuthor = template.substring(template.indexOf("{{value}}")+"{{value}}".length());
         htmlBuilder.append(beforeQnaAuthor).append(user.getName());
