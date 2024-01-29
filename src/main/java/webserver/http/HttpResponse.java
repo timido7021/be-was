@@ -1,6 +1,21 @@
 package webserver.http;
 
+import controller.util.FileUtil;
+
+import java.io.File;
+import java.io.IOException;
+
 public class HttpResponse {
+    private static byte[] notFoundBody;
+
+    static {
+        try {
+            notFoundBody = FileUtil.readFile(new File("src/main/resources/templates/404.html"));
+        } catch (IOException e) {
+            notFoundBody = "".getBytes();
+        }
+    }
+
     private ResponseHeader header;
     private byte[] body;
 
@@ -19,6 +34,11 @@ public class HttpResponse {
 
     public void setBody(byte[] body) {
         this.body = body;
+    }
+
+    public void set404Body() {
+        addHeaderProperty("Content-Type", "text/html");
+        this.body = notFoundBody;
     }
 
     public HttpStatus getStatusCode() {

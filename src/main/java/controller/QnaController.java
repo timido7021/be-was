@@ -93,8 +93,8 @@ public class QnaController {
 
         Qna qna = qnaService.getQna(qnaId);
         if (qna == null) {
-            response.setStatusCode(HttpStatus.FOUND);
-            response.addHeaderProperty("Location", "/index.html");
+            response.setStatusCode(HttpStatus.NOT_FOUND);
+            response.set404Body();
             return;
         }
 

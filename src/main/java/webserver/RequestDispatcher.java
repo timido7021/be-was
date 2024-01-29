@@ -28,6 +28,8 @@ public class RequestDispatcher {
         if (!Set.of("GET", "POST").contains(httpMethod)) { // 적합하지 않은 HTTP method
             response.setStatusCode(HttpStatus.METHOD_NOT_ALLOWED);
             response.addHeaderProperty("Allow", "GET, POST");
+            response.set404Body();
+            return;
         }
 
         // MethodMapper가 GetMapping, PostMapping 어노테이션을 통해
@@ -50,5 +52,6 @@ public class RequestDispatcher {
 
         // 요청을 처리할 수 없으므로 404 Not Found 응답
         response.setStatusCode(HttpStatus.NOT_FOUND);
+        response.set404Body();
     }
 }
