@@ -100,23 +100,19 @@ public class FileUtil {
         String afterMenuBar = originalBody.substring(originalBody.indexOf("{{menu_bar}}")
                 + "{{menu_bar}}".length());
 
-        String relativePath = "./";
-        if (request.getUrl().contains("/qna/") || request.getUrl().contains("/user/"))
-            relativePath = "../";
-
         String logoutBtnStyle = "border: black 0px solid; background: transparent; padding: 15px; line-height: 20px; color:#777;";
 
         htmlBuilder.append(beforeMenuBar);
         if (user != null) {
             htmlBuilder.append("<li><a href=\"#\">").append(user.getName()).append("</a></li>")
-                    .append("<li><a href=\"").append(relativePath).append("index.html\" role=\"button\">Posts</a></li>\n")
+                    .append("<li><a href=\"/index.html\" role=\"button\">Posts</a></li>\n")
                     .append("<li><form method=\"POST\" action=\"/user/logout\"><button style=\"").append(logoutBtnStyle)
                     .append("\">로그아웃</button></form></li>\n")
                     .append("<li><a href=\"#\" role=\"button\">개인정보수정</a></li>");
         } else {
-            htmlBuilder.append("<li><a href=\"../index.html\">Posts</a></li>\n")
-                    .append("<li><a href=\"").append(relativePath).append("user/login.html\" role=\"button\">로그인</a></li>\n")
-                    .append("<li><a href=\"").append(relativePath).append("user/form.html\" role=\"button\">회원가입</a></li>\n");
+            htmlBuilder.append("<li><a href=\"/index.html\">Posts</a></li>\n")
+                    .append("<li><a href=\"/user/login.html\" role=\"button\">로그인</a></li>\n")
+                    .append("<li><a href=\"/user/form.html\" role=\"button\">회원가입</a></li>\n");
         }
         htmlBuilder.append(afterMenuBar);
         byte[] htmlBody = htmlBuilder.toString().getBytes();
