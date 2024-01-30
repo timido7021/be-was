@@ -100,6 +100,7 @@ public class StaticResourceController {
         response.addHeaderProperty("Content-Type", contentType);
 
         if (contentType.equals("text/html")) {
+            response.setStatusCode(HttpStatus.OK);
             response.setBody(body);
             FileUtil.generateDynamicMenuBar(request, response);
             return;

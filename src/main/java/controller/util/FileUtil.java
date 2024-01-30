@@ -119,7 +119,6 @@ public class FileUtil {
 
         response.addHeaderProperty("Content-Length", String.valueOf(htmlBody.length));
 
-        response.setStatusCode(HttpStatus.OK);
         response.setBody(htmlBody);
     }
 }
