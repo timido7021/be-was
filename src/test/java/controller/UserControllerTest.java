@@ -93,14 +93,11 @@ class UserControllerTest {
     }
 
     @Test
-    @DisplayName("GET /user/list에 대한 유저 목록 나열 성공 테스트")
-    void listUsersSuccessTest() throws IOException {
-        String sid = SessionManager.createSession(
-                new User("mock", "mock", "mock", "mock@mock.com"));
+    @DisplayName("GET /user/list에 대한 유저 목록 나열 테스트")
+    void listUsersTest() throws IOException {
         UserController userController = UserController.getInstance();
         HttpRequest request = HttpRequest.createFromReader(new BufferedReader(
                 new StringReader("GET /user/list HTTP/1.1\n" +
-                        "Cookie: sid=" + sid + "\n" +
                         "\n"
                 )
         ));
@@ -115,21 +112,5 @@ class UserControllerTest {
         assertThat(bodyString).contains("<th>사용자 아이디</th>");
         assertThat(bodyString).contains("<th>이름</th>");
         assertThat(bodyString).contains("<th>이메일</th>");
-    }
-
-    @Test
-    @DisplayName("GET /user/list에 대한 유저 목록 나열 실패 테스트")
-    void listUsersFailTest() throws IOException {
-        UserController userController = UserController.getInstance();
-        HttpRequest request = HttpRequest.createFromReader(new BufferedReader(
-                new StringReader("GET /user/list HTTP/1.1\n"
-                        + "\n")
-        ));
-        HttpResponse response = HttpResponse.of();
-
-        userController.list(request, response);
-
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FOUND);
-        assertThat(response.getHeaderProperty("Location")).isEqualTo("/user/login.html");
     }
 }
