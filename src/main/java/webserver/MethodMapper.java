@@ -3,6 +3,7 @@ package webserver;
 import annotations.AuthRequired;
 import annotations.GetMapping;
 import annotations.PostMapping;
+import controller.util.FileUtil;
 import model.User;
 import webserver.http.HttpRequest;
 import webserver.http.HttpResponse;
@@ -75,6 +76,9 @@ public class MethodMapper {
                 }
             }
             method.invoke(instance, request, response);
+            if (response.getHeaderProperty("Content-Type").equals("text/html")) {
+                FileUtil.generateDynamicMenuBar(request, response);
+            }
         } catch (Exception e) {
             logger.debug(e.getClass().toString() + " " + e.getMessage());
             response.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR);

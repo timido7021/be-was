@@ -72,8 +72,6 @@ public class StaticResourceController {
 
         response.addHeaderProperty("Content-Type", "text/html");
         response.setBody(htmlBuilder.toString().getBytes());
-
-        FileUtil.generateDynamicMenuBar(request, response);
     }
 
     public void handle(HttpRequest request, HttpResponse response) throws IOException {

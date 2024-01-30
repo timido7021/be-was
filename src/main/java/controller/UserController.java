@@ -112,8 +112,7 @@ public class UserController {
         }
         htmlBuilder.append("</tbody>").append(afterTable);
 
+        response.addHeaderProperty("Content-Type", "text/html");
         response.setBody(htmlBuilder.toString().getBytes());
-
-        FileUtil.generateDynamicMenuBar(request, response);
     }
 }

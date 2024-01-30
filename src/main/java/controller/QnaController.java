@@ -42,8 +42,6 @@ public class QnaController {
         response.addHeaderProperty("Content-Type", "text/html");
         response.setStatusCode(HttpStatus.OK);
         response.setBody(htmlBuilder.toString().getBytes());
-
-        FileUtil.generateDynamicMenuBar(request, response);
     }
 
     @PostMapping(route = "/qna/write")
@@ -95,7 +93,6 @@ public class QnaController {
         if (qna == null) {
             response.setStatusCode(HttpStatus.NOT_FOUND);
             response.set404Body();
-            FileUtil.generateDynamicMenuBar(request, response);
             return;
         }
 
@@ -107,6 +104,5 @@ public class QnaController {
         response.addHeaderProperty("Content-Type", "text/html");
         response.setStatusCode(HttpStatus.OK);
         response.setBody(template.getBytes());
-        FileUtil.generateDynamicMenuBar(request, response);
     }
 }

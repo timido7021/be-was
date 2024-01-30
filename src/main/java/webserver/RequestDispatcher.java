@@ -30,7 +30,6 @@ public class RequestDispatcher {
             response.setStatusCode(HttpStatus.METHOD_NOT_ALLOWED);
             response.addHeaderProperty("Allow", "GET, POST");
             response.set404Body();
-            FileUtil.generateDynamicMenuBar(request, response);
             return;
         }
 
